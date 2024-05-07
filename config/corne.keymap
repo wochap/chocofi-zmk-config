@@ -58,9 +58,9 @@
         nums_layer {
             bindings = <
         //╭──────────┬──────────┬──────────┬──────────┬──────────┬──────────╮   ╭──────────┬──────────┬──────────┬──────────┬──────────┬──────────╮
-            &none      &kp 8      &kp 7      &kp 3      &kp 0      &kp 5          &kp 6      &kp 2      &kp 1      &kp 9      &kp 4      &none
+            &none      &kp N8     &kp N7     &kp N3     &kp N0     &kp N5         &kp N6     &kp N2     &kp N1     &kp N9     &kp N4     &none
         //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
-            &none      C_HM_L(DLLR, &none,   LPAR,      RPAR)      &kp AT         &kp BSLH   C_HM_R(MINUS, EQUAL,  &none,     ASTRK)     &none
+            &none      &c_hm LGUI DLLR &kp LALT &c_hm LCTRL LPAR &c_hm LSHIFT RPAR &kp AT &kp BSLH &c_hm RSHIFT MINUS &c_hm RCTRL EQUAL &kp RALT &c_hm RGUI ASTRK &none
         //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
             &none      &kp EXCL   &kp HASH   &none      &kp SQT    &kp GRAVE      &kp AMPS   &kp LBKT   &kp RBKT   &kp PRCNT  &kp CARET  &none
         //╰──────────┴──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────┴──────────╯
