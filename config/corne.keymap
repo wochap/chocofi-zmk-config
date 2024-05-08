@@ -15,22 +15,24 @@
 
 // Layers
 #define COLEMAK_DH 0
-#define NUMS 1
+#define NUM 1
 #define NAV 2
 #define FN 3
+#define ADJUST 4
 
 / {
     // docs: https://zmk.dev/docs/behaviors/hold-tap
     behaviors {
-        c_hm: homerow_mods {
+        c_hm: homerow_mod {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
+            quick-tap-ms = <150>;
             tapping-term-ms = <250>;
             flavor = "tap-preferred";
             bindings = <&kp>, <&kp>;
         };
 
-        c_lt: layers_tabs {
+        c_lt: layer_tab {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
             tapping-term-ms = <150>;
@@ -39,9 +41,24 @@
         };
     };
 
+    // docs: https://zmk.dev/docs/behaviors/macros
+    macros {
+        c_mo_num: momentary_layer_num {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            // wait-ms = <0>;
+            bindings
+                = <&macro_release &mo NAV>
+                , <&macro_press &mo NUM>
+                , <&macro_pause_for_release>
+                , <&macro_release &mo NUM>
+                ;
+        };
+    };
+
     keymap {
         compatible = "zmk,keymap";
-        default_layer {
+        colemakdh_layer {
             bindings = <
         //╭──────────┬──────────┬──────────┬──────────┬──────────┬──────────╮   ╭──────────┬──────────┬──────────┬──────────┬──────────┬──────────╮
             &none      &kp Q      &kp W      &kp F      &kp P      &kp B          &kp J      &kp L      &kp U      &kp Y      &kp SEMI   &none
@@ -50,17 +67,17 @@
         //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
             &none      &kp Z      &kp X      &kp C      &kp D      &kp V          &kp K      &kp H      &kp COMMA  &kp DOT    &kp SLASH  &none
         //╰──────────┴──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────┴──────────╯
-                                             &none      C_LT(NUMS, TAB) &kp V &kp BSPC   C_LT(NAV, ENTER) &none
+                                             &none      C_LT(NUM, TAB) &kp SPACE &kp BSPC   C_LT(NAV, ENTER) &none
         //                                 ╰──────────┴──────────┴──────────╯   ╰──────────┴──────────┴──────────╯
             >;
         };
 
-        nums_layer {
+        num_layer {
             bindings = <
         //╭──────────┬──────────┬──────────┬──────────┬──────────┬──────────╮   ╭──────────┬──────────┬──────────┬──────────┬──────────┬──────────╮
             &none      &kp N8     &kp N7     &kp N3     &kp N0     &kp N5         &kp N6     &kp N2     &kp N1     &kp N9     &kp N4     &none
         //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
-            &none      &c_hm LGUI DLLR &kp LALT &c_hm LCTRL LPAR &c_hm LSHIFT RPAR &kp AT &kp BSLH &c_hm RSHIFT MINUS &c_hm RCTRL EQUAL &kp RALT &c_hm RGUI ASTRK &none
+            &none      C_HM_L(DLLR, LALT,    LPAR,      RPAR)      &kp AT         &kp BSLH   C_HM_R(MINUS, EQUAL,  RALT,      ASTRK)     &none
         //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
             &none      &kp EXCL   &kp HASH   &none      &kp SQT    &kp GRAVE      &kp AMPS   &kp LBKT   &kp RBKT   &kp PRCNT  &kp CARET  &none
         //╰──────────┴──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────┴──────────╯
@@ -76,9 +93,9 @@
         //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
             &none      C_HM_L(F11, HOME,     PG_UP,     PG_DN)     &kp END        &kp LEFT   C_HM_R(DOWN, UP,      RIGHT,     F12)       &none
         //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
-            &none      &none      &none      &none      &none      &kp CAPS       &kp PSCRN  &none      &none      &none      &none      &none
+            &none      &none      &none      &none      &none      &kp CAPS       &kp PSCRN  &none      &none      &none      &sl ADJUST &none
         //╰──────────┴──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────┴──────────╯
-                                             &none      &mo NUMS   &mo FN         &none      &trans     &none
+                                             &none      <&c_mo_num> &mo FN        &none      &trans     &none
         //                                 ╰──────────┴──────────┴──────────╯   ╰──────────┴──────────┴──────────╯
             >;
         };
@@ -93,6 +110,20 @@
             &none      &none      &none      &none      &none      &none          &none      &none      &none      &none      &none      &none
         //╰──────────┴──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────┴──────────╯
                                              &none      &trans     &none          &none      &none      &none
+        //                                 ╰──────────┴──────────┴──────────╯   ╰──────────┴──────────┴──────────╯
+            >;
+        };
+
+        adjust_layer {
+            bindings = <
+        //╭──────────┬──────────┬──────────┬──────────┬──────────┬──────────╮   ╭──────────┬──────────┬──────────┬──────────┬──────────┬──────────╮
+            &none      &none      &out OUT_USB &out OUT_BLE &out OUT_TOG &none    &none      &none      &none      &none      &none      &none
+        //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
+            &none      &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &none &none     &none      &none      &none      &none
+        //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
+            &none      &none      &none      &none      &bootloader &sys_reset    &sys_reset &bootloader &none     &none      &none      &none
+        //╰──────────┴──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────┴──────────╯
+                                             &none      &none      &none          &none      &none      &none
         //                                 ╰──────────┴──────────┴──────────╯   ╰──────────┴──────────┴──────────╯
             >;
         };
