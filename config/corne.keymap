@@ -13,13 +13,16 @@
 #define C_HM_L(k1, k2, k3, k4) &c_hm LGUI k1  &c_hm LALT k2  &c_hm LCTRL k3  &c_hm LSHIFT k4
 #define C_HM_R(k1, k2, k3, k4) &c_hm RSHIFT k1  &c_hm RCTRL k2  &c_hm RALT k3  &c_hm RGUI k4
 #define C_LT(l1, k1) &c_lt l1 k1
+#define XXXXXX &none
+#define ______ &trans
 
 // Layers
 #define COLEMAK_DH 0
-#define NUM 1
-#define NAV 2
-#define FN 3
-#define ADJUST 4
+#define QUERTY 1
+#define NUM 2
+#define NAV 3
+#define FN 4
+#define ADJUST 5
 
 / {
     // docs: https://zmk.dev/docs/behaviors/hold-tap
@@ -47,7 +50,7 @@
         c_mo_num: momentary_layer_num {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            // wait-ms = <0>;
+            wait-ms = <1>;
             bindings
                 = <&macro_release &mo NAV>
                 , <&macro_press &mo NUM>
@@ -67,6 +70,20 @@
             &none      C_HM_L(A,  R,         S,         T)         &kp G          &kp M      C_HM_R(N,  E,         I,         O)         &none
         //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
             &none      &kp Z      &kp X      &kp C      &kp D      &kp V          &kp K      &kp H      &kp COMMA  &kp DOT    &kp SLASH  &none
+        //╰──────────┴──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────┴──────────╯
+                                             &none      C_LT(NUM, TAB) &kp SPACE &kp BSPC   C_LT(NAV, ENTER) &none
+        //                                 ╰──────────┴──────────┴──────────╯   ╰──────────┴──────────┴──────────╯
+            >;
+        };
+
+        querty_layer {
+            bindings = <
+        //╭──────────┬──────────┬──────────┬──────────┬──────────┬──────────╮   ╭──────────┬──────────┬──────────┬──────────┬──────────┬──────────╮
+            &none      &kp Q      &kp W      &kp E      &kp R      &kp T          &kp Y      &kp U      &kp I      &kp O      &kp P      &none
+        //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
+            &none      C_HM_L(A,  S,         D,         F)         &kp G          &kp H      C_HM_R(J,  K,         L,         SEMI)      &none
+        //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
+            &none      &kp Z      &kp X      &kp C      &kp V      &kp B          &kp N      &kp M      &kp COMMA  &kp DOT    &kp SLASH  &none
         //╰──────────┴──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────┴──────────╯
                                              &none      C_LT(NUM, TAB) &kp SPACE &kp BSPC   C_LT(NAV, ENTER) &none
         //                                 ╰──────────┴──────────┴──────────╯   ╰──────────┴──────────┴──────────╯
@@ -122,7 +139,7 @@
         //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
             &none      &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &none &none     &none      &none      &none      &none
         //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
-            &none      &none      &none      &none      &bootloader &sys_reset    &sys_reset &bootloader &none     &none      &none      &none
+            &none      &none      &none      &none      &bootloader &sys_reset    &sys_reset &bootloader &none     &none      &tog QUERTY &none
         //╰──────────┴──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────┴──────────╯
                                              &none      &none      &none          &none      &none      &none
         //                                 ╰──────────┴──────────┴──────────╯   ╰──────────┴──────────┴──────────╯
