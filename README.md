@@ -1,6 +1,6 @@
 ## Chocofi zmk config
 
-### Docs
+### Layers
 
 ColemakDH layer
 ![Imgur](https://i.imgur.com/1igKPoQ.jpg)
@@ -12,6 +12,7 @@ Nav layer
 ![Imgur](https://i.imgur.com/dwhNjkD.png)
 
 Adjust layer
+![Imgur](https://i.imgur.com/bMLH8a6.png)
 
 > Images generated with http://www.keyboard-layout-editor.com/, use the files in `assets` folder
 
