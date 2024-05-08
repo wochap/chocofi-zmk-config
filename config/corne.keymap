@@ -65,13 +65,13 @@
         colemakdh_layer {
             bindings = <
         //╭──────────┬──────────┬──────────┬──────────┬──────────┬──────────╮   ╭──────────┬──────────┬──────────┬──────────┬──────────┬──────────╮
-            &none      &kp Q      &kp W      &kp F      &kp P      &kp B          &kp J      &kp L      &kp U      &kp Y      &kp SEMI   &none
+            XXXXXX     &kp Q      &kp W      &kp F      &kp P      &kp B          &kp J      &kp L      &kp U      &kp Y      &kp SEMI   XXXXXX
         //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
-            &none      C_HM_L(A,  R,         S,         T)         &kp G          &kp M      C_HM_R(N,  E,         I,         O)         &none
+            XXXXXX     C_HM_L(A,  R,         S,         T)         &kp G          &kp M      C_HM_R(N,  E,         I,         O)         XXXXXX
         //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
-            &none      &kp Z      &kp X      &kp C      &kp D      &kp V          &kp K      &kp H      &kp COMMA  &kp DOT    &kp SLASH  &none
+            XXXXXX     &kp Z      &kp X      &kp C      &kp D      &kp V          &kp K      &kp H      &kp COMMA  &kp DOT    &kp SLASH  XXXXXX
         //╰──────────┴──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────┴──────────╯
-                                             &none      C_LT(NUM, TAB) &kp SPACE &kp BSPC   C_LT(NAV, ENTER) &none
+                                             XXXXXX     C_LT(NUM, TAB) &kp SPACE &kp BSPC   C_LT(NAV, ENTER) XXXXXX
         //                                 ╰──────────┴──────────┴──────────╯   ╰──────────┴──────────┴──────────╯
             >;
         };
@@ -79,13 +79,13 @@
         querty_layer {
             bindings = <
         //╭──────────┬──────────┬──────────┬──────────┬──────────┬──────────╮   ╭──────────┬──────────┬──────────┬──────────┬──────────┬──────────╮
-            &none      &kp Q      &kp W      &kp E      &kp R      &kp T          &kp Y      &kp U      &kp I      &kp O      &kp P      &none
+            XXXXXX     &kp Q      &kp W      &kp E      &kp R      &kp T          &kp Y      &kp U      &kp I      &kp O      &kp P      XXXXXX
         //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
-            &none      C_HM_L(A,  S,         D,         F)         &kp G          &kp H      C_HM_R(J,  K,         L,         SEMI)      &none
+            XXXXXX     C_HM_L(A,  S,         D,         F)         &kp G          &kp H      C_HM_R(J,  K,         L,         SEMI)      XXXXXX
         //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
-            &none      &kp Z      &kp X      &kp C      &kp V      &kp B          &kp N      &kp M      &kp COMMA  &kp DOT    &kp SLASH  &none
+            XXXXXX     &kp Z      &kp X      &kp C      &kp V      &kp B          &kp N      &kp M      &kp COMMA  &kp DOT    &kp SLASH  XXXXXX
         //╰──────────┴──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────┴──────────╯
-                                             &none      C_LT(NUM, TAB) &kp SPACE &kp BSPC   C_LT(NAV, ENTER) &none
+                                             XXXXXX     C_LT(NUM, TAB) &kp SPACE &kp BSPC   C_LT(NAV, ENTER) XXXXXX
         //                                 ╰──────────┴──────────┴──────────╯   ╰──────────┴──────────┴──────────╯
             >;
         };
@@ -93,13 +93,13 @@
         num_layer {
             bindings = <
         //╭──────────┬──────────┬──────────┬──────────┬──────────┬──────────╮   ╭──────────┬──────────┬──────────┬──────────┬──────────┬──────────╮
-            &none      &kp N8     &kp N7     &kp N3     &kp N0     &kp N5         &kp N6     &kp N2     &kp N1     &kp N9     &kp N4     &none
+            XXXXXX     &kp N8     &kp N7     &kp N3     &kp N0     &kp N5         &kp N6     &kp N2     &kp N1     &kp N9     &kp N4     XXXXXX
         //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
-            &none      C_HM_L(DLLR, LALT,    LPAR,      RPAR)      &kp AT         &kp BSLH   C_HM_R(MINUS, EQUAL,  RALT,      ASTRK)     &none
+            XXXXXX     C_HM_L(DLLR, LALT,    LPAR,      RPAR)      &kp AT         &kp BSLH   C_HM_R(MINUS, EQUAL,  RALT,      ASTRK)     XXXXXX
         //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
-            &none      &kp EXCL   &kp HASH   &none      &kp SQT    &kp GRAVE      &kp AMPS   &kp LBKT   &kp RBKT   &kp PRCNT  &kp CARET  &none
+            XXXXXX     &kp EXCL   &kp HASH   XXXXXX     &kp SQT    &kp GRAVE      &kp AMPS   &kp LBKT   &kp RBKT   &kp PRCNT  &kp CARET  XXXXXX
         //╰──────────┴──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────┴──────────╯
-                                             &none      &trans     &none          &kp DEL    C_LT(NAV, ESC) &none
+                                             XXXXXX     ______     XXXXXX          &kp DEL    C_LT(NAV, ESC) XXXXXX
         //                                 ╰──────────┴──────────┴──────────╯   ╰──────────┴──────────┴──────────╯
             >;
         };
@@ -107,13 +107,13 @@
         nav_layer {
             bindings = <
         //╭──────────┬──────────┬──────────┬──────────┬──────────┬──────────╮   ╭──────────┬──────────┬──────────┬──────────┬──────────┬──────────╮
-            &none      &kp F1     &kp F2     &kp F3     &kp F4     &kp F5         &kp F6     &kp F7     &kp F8     &kp F9     &kp F10    &none
+            XXXXXX     &kp F1     &kp F2     &kp F3     &kp F4     &kp F5         &kp F6     &kp F7     &kp F8     &kp F9     &kp F10    XXXXXX
         //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
-            &none      C_HM_L(F11, HOME,     PG_UP,     PG_DN)     &kp END        &kp LEFT   C_HM_R(DOWN, UP,      RIGHT,     F12)       &none
+            XXXXXX     C_HM_L(F11, HOME,     PG_UP,     PG_DN)     &kp END        &kp LEFT   C_HM_R(DOWN, UP,      RIGHT,     F12)       XXXXXX
         //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
-            &none      &none      &none      &none      &none      &kp CAPS       &kp PSCRN  &none      &none      &none      &sl ADJUST &none
+            XXXXXX     XXXXXX     XXXXXX     XXXXXX     XXXXXX     &kp CAPS       &kp PSCRN  XXXXXX     XXXXXX     XXXXXX     &sl ADJUST XXXXXX
         //╰──────────┴──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────┴──────────╯
-                                             &none      &c_mo_num  &mo FN        &none      &trans     &none
+                                             XXXXXX     &c_mo_num  &mo FN         XXXXXX     ______     XXXXXX
         //                                 ╰──────────┴──────────┴──────────╯   ╰──────────┴──────────┴──────────╯
             >;
         };
@@ -121,13 +121,13 @@
         fn_layer {
             bindings = <
         //╭──────────┬──────────┬──────────┬──────────┬──────────┬──────────╮   ╭──────────┬──────────┬──────────┬──────────┬──────────┬──────────╮
-            &none      &kp C_BRI_DN &kp C_BRI_UP &none  &none      &none          &none      &kp C_PREV &kp C_PP   &kp C_NEXT &kp C_MUTE &none
+            XXXXXX     &kp C_BRI_DN &kp C_BRI_UP XXXXXX XXXXXX     XXXXXX         XXXXXX     &kp C_PREV &kp C_PP   &kp C_NEXT &kp C_MUTE XXXXXX
         //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
-            &none      &kp C_VOL_DN &none    &none      &none      &none          &none      &none      &none      &none      &kp C_VOL_UP &none
+            XXXXXX     &kp C_VOL_DN XXXXXX   XXXXXX     XXXXXX     XXXXXX         XXXXXX     XXXXXX     XXXXXX     XXXXXX     &kp C_VOL_UP XXXXXX
         //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
-            &none      &none      &none      &none      &none      &none          &none      &none      &none      &none      &none      &none
+            XXXXXX     XXXXXX     XXXXXX     XXXXXX     XXXXXX     XXXXXX         XXXXXX     XXXXXX     XXXXXX     XXXXXX     XXXXXX     XXXXXX
         //╰──────────┴──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────┴──────────╯
-                                             &none      &trans     &none          &none      &none      &none
+                                             XXXXXX     ______     XXXXXX         XXXXXX     XXXXXX     XXXXXX
         //                                 ╰──────────┴──────────┴──────────╯   ╰──────────┴──────────┴──────────╯
             >;
         };
@@ -135,13 +135,13 @@
         adjust_layer {
             bindings = <
         //╭──────────┬──────────┬──────────┬──────────┬──────────┬──────────╮   ╭──────────┬──────────┬──────────┬──────────┬──────────┬──────────╮
-            &none      &none      &out OUT_USB &out OUT_BLE &out OUT_TOG &none    &none      &none      &none      &none      &none      &none
+            XXXXXX     XXXXXX     &out OUT_USB &out OUT_BLE &out OUT_TOG XXXXXX   XXXXXX     XXXXXX     XXXXXX     XXXXXX     XXXXXX     XXXXXX
         //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
-            &none      &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &none &none     &none      &none      &none      &none
+            XXXXXX     &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 XXXXXX XXXXXX   XXXXXX     XXXXXX     XXXXXX     XXXXXX
         //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
-            &none      &none      &none      &none      &bootloader &sys_reset    &sys_reset &bootloader &none     &none      &tog QUERTY &none
+            XXXXXX     XXXXXX     XXXXXX     XXXXXX     &bootloader &sys_reset    &sys_reset &bootloader XXXXXX    XXXXXX     &tog QUERTY XXXXXX
         //╰──────────┴──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────┴──────────╯
-                                             &none      &none      &none          &none      &none      &none
+                                             XXXXXX     XXXXXX     XXXXXX         XXXXXX     XXXXXX     XXXXXX
         //                                 ╰──────────┴──────────┴──────────╯   ╰──────────┴──────────┴──────────╯
             >;
         };
