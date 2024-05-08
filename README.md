@@ -2,16 +2,19 @@
 
 ### Layers
 
-ColemakDH layer
+ColemakDH
 ![Imgur](https://i.imgur.com/1igKPoQ.jpg)
 
-Num layer
+Querty
+![Imgur](https://i.imgur.com/OMmmfWw.png)
+
+Num
 ![Imgur](https://i.imgur.com/70txcxD.png)
 
-Nav layer
-![Imgur](https://i.imgur.com/dwhNjkD.png)
+Nav
+![Imgur](https://i.imgur.com/YICzLky.png)
 
-Adjust layer
+Adjust
 ![Imgur](https://i.imgur.com/bMLH8a6.png)
 
 > Images generated with http://www.keyboard-layout-editor.com/, use the files in `assets` folder
