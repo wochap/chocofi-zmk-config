@@ -7,8 +7,9 @@
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/outputs.h>
 
-// Macros
+// C Macros
 #define C_HM_L(k1, k2, k3, k4) &c_hm LGUI k1  &c_hm LALT k2  &c_hm LCTRL k3  &c_hm LSHIFT k4
 #define C_HM_R(k1, k2, k3, k4) &c_hm RSHIFT k1  &c_hm RCTRL k2  &c_hm RALT k3  &c_hm RGUI k4
 #define C_LT(l1, k1) &c_lt l1 k1
