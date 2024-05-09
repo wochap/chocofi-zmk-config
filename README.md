@@ -1,4 +1,4 @@
-## Chocofi zmk config
+## Chocofi ZMK config
 
 ### Layers
 
