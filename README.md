@@ -38,7 +38,7 @@ Git commit and push, GH Actions will build the firmware
 1. In VSCode terminal, run `cd app`
 1. Edit `app/boards/shields/kyria/kyria_left.overlay` with your keymap and run
 
-   ```
+   ```sh
    $ west build -b proton_c -- -DSHIELD=kyria_left
    ```
 
