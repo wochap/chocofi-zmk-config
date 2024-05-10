@@ -31,7 +31,7 @@
 / {
     // docs: https://zmk.dev/docs/behaviors/hold-tap
     behaviors {
-        c_hm_l: homerow_mod {
+        c_hm_l: homerow_left_mod {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
             quick-tap-ms = <150>;
@@ -43,7 +43,7 @@
             hold-trigger-on-release; // delay positional check until key-release
         };
 
-        c_hm_r: homerow_mod {
+        c_hm_r: homerow_right_mod {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
             quick-tap-ms = <150>;
