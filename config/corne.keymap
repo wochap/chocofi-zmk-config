@@ -8,6 +8,7 @@
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/outputs.h>
+#include <dt-bindings/zmk/ext_power.h>
 #include "keypos_42keys.h"
 
 // C Macros
@@ -91,7 +92,7 @@
         //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
             XXXXXX     &kp Z      &kp X      &kp C      &kp D      &kp V          &kp K      &kp H      &kp COMMA  &kp DOT    &kp SLASH  XXXXXX
         //╰──────────┴──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────┴──────────╯
-                                             XXXXXX     C_LT(NUM, TAB) &kp SPACE &kp BSPC   C_LT(NAV, ENTER) XXXXXX
+                                             &kp LSHIFT C_LT(NUM, TAB) &kp SPACE &kp BSPC   C_LT(NAV, ENTER) &kp RSHIFT
         //                                 ╰──────────┴──────────┴──────────╯   ╰──────────┴──────────┴──────────╯
             >;
         };
@@ -105,7 +106,7 @@
         //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
             XXXXXX     &kp Z      &kp X      &kp C      &kp V      &kp B          &kp N      &kp M      &kp COMMA  &kp DOT    &kp SLASH  XXXXXX
         //╰──────────┴──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────┴──────────╯
-                                             XXXXXX     C_LT(NUM, TAB) &kp SPACE &kp BSPC   C_LT(NAV, ENTER) XXXXXX
+                                             &kp LSHIFT C_LT(NUM, TAB) &kp SPACE &kp BSPC   C_LT(NAV, ENTER) &kp RSHIFT
         //                                 ╰──────────┴──────────┴──────────╯   ╰──────────┴──────────┴──────────╯
             >;
         };
@@ -119,7 +120,7 @@
         //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
             XXXXXX     &kp EXCL   &kp HASH   XXXXXX     &kp SQT    &kp GRAVE      &kp AMPS   &kp LBKT   &kp RBKT   &kp PRCNT  &kp CARET  XXXXXX
         //╰──────────┴──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────┴──────────╯
-                                             XXXXXX     ______     XXXXXX          &kp DEL    C_LT(NAV, ESC) XXXXXX
+                                             ______     ______     XXXXXX          &kp DEL    C_LT(NAV, ESC) ______
         //                                 ╰──────────┴──────────┴──────────╯   ╰──────────┴──────────┴──────────╯
             >;
         };
@@ -133,7 +134,7 @@
         //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
             XXXXXX     XXXXXX     XXXXXX     XXXXXX     XXXXXX     &kp CAPS       &kp PSCRN  XXXXXX     XXXXXX     XXXXXX     &sl ADJUST XXXXXX
         //╰──────────┴──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────┴──────────╯
-                                             XXXXXX     &c_mo_num  &mo FN         XXXXXX     ______     XXXXXX
+                                             ______     &c_mo_num  &mo FN         XXXXXX     ______     ______
         //                                 ╰──────────┴──────────┴──────────╯   ╰──────────┴──────────┴──────────╯
             >;
         };
@@ -147,7 +148,7 @@
         //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
             XXXXXX     XXXXXX     XXXXXX     XXXXXX     XXXXXX     XXXXXX         XXXXXX     XXXXXX     XXXXXX     XXXXXX     XXXXXX     XXXXXX
         //╰──────────┴──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────┴──────────╯
-                                             XXXXXX     ______     XXXXXX         XXXXXX     XXXXXX     XXXXXX
+                                             ______     ______     XXXXXX         XXXXXX     XXXXXX     ______
         //                                 ╰──────────┴──────────┴──────────╯   ╰──────────┴──────────┴──────────╯
             >;
         };
@@ -155,7 +156,7 @@
         adjust_layer {
             bindings = <
         //╭──────────┬──────────┬──────────┬──────────┬──────────┬──────────╮   ╭──────────┬──────────┬──────────┬──────────┬──────────┬──────────╮
-            XXXXXX     XXXXXX     &out OUT_USB &out OUT_BLE &out OUT_TOG XXXXXX   XXXXXX     XXXXXX     XXXXXX     XXXXXX     XXXXXX     XXXXXX
+            XXXXXX     XXXXXX     &out OUT_USB &out OUT_BLE &out OUT_TOG XXXXXX   &ext_power EP_TOG &ext_power EP_ON &ext_power EP_OFF XXXXXX XXXXXX XXXXXX
         //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
             XXXXXX     &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &bt BT_CLR_ALL &bt BT_CLR XXXXXX XXXXXX XXXXXX   XXXXXX
         //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
@@ -168,4 +169,5 @@
     };
 };
 
-// vim: ft=c
+// vim: filetype=c
+// vim: syntax=off

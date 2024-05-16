@@ -15,7 +15,7 @@ Nav
 ![Imgur](https://i.imgur.com/YICzLky.png)
 
 Adjust
-![Imgur](https://i.imgur.com/bMLH8a6.png)
+![Imgur](https://i.imgur.com/0K5iIqP.png)
 
 > Images generated with http://www.keyboard-layout-editor.com/, use the files in `assets` folder
 
