@@ -34,11 +34,11 @@
     behaviors {
         c_hm_l: homerow_left_mod {
             compatible = "zmk,behavior-hold-tap";
+            quick-tap-ms = <125>; // tap held if same key is pressed twice within that time
+            tapping-term-ms = <150>;
+            require-prior-idle-ms = <125>; // tap if prev non modifier key was pressed within that time
+            flavor = "tap-preferred"; // hold if key was pressed longer than tapping term
             #binding-cells = <2>;
-            quick-tap-ms = <150>;
-            tapping-term-ms = <220>;
-            require-prior-idle-ms = <120>; // tap if prev non modifier key was pressed within that time
-            flavor = "tap-preferred";
             bindings = <&kp>, <&kp>;
             hold-trigger-key-positions = <KEYS_R KEYS_T>;
             hold-trigger-on-release; // delay positional check until key-release
@@ -46,11 +46,11 @@
 
         c_hm_r: homerow_right_mod {
             compatible = "zmk,behavior-hold-tap";
+            quick-tap-ms = <125>; // tap held if same key is pressed twice within that time
+            tapping-term-ms = <150>;
+            require-prior-idle-ms = <125>; // tap if prev non modifier key was pressed within that time
+            flavor = "tap-preferred"; // hold if key was pressed longer than tapping term
             #binding-cells = <2>;
-            quick-tap-ms = <150>;
-            tapping-term-ms = <220>;
-            require-prior-idle-ms = <120>; // tap if prev non modifier key was pressed within that time
-            flavor = "tap-preferred";
             bindings = <&kp>, <&kp>;
             hold-trigger-key-positions = <KEYS_L KEYS_T>;
             hold-trigger-on-release; // delay positional check until key-release
@@ -58,10 +58,10 @@
 
         c_lt: layer_tab {
             compatible = "zmk,behavior-hold-tap";
-            #binding-cells = <2>;
-            quick-tap-ms = <150>;
-            tapping-term-ms = <120>;
+            quick-tap-ms = <125>; // tap held if same key is pressed twice within that time
+            tapping-term-ms = <125>; // tap if key was pressed within that time
             flavor = "hold-preferred";
+            #binding-cells = <2>;
             bindings = <&mo>, <&kp>;
         };
     };
