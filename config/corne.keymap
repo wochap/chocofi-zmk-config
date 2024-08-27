@@ -105,6 +105,13 @@
         layers = <COLEMAK_DH QUERTY>;
         require-prior-idle-ms = <150>;
       };
+      selall {
+        timeout-ms = <18>;
+        bindings = <&kp LC(A)>;
+        key-positions = <LT3 LT2>;
+        layers = <COLEMAK_DH QUERTY>;
+        require-prior-idle-ms = <150>;
+      };
     };
 
     keymap {
