@@ -81,6 +81,32 @@
         };
     };
 
+    // docs: https://zmk.dev/docs/keymaps/combos
+    combos {
+      compatible = "zmk,combos";
+      cut {
+        timeout-ms = <18>;
+        bindings = <&kp LC(X)>;
+        key-positions = <LB3 LB1>;
+        layers = <COLEMAK_DH QUERTY>;
+        require-prior-idle-ms = <150>;
+      };
+      copy {
+        timeout-ms = <18>;
+        bindings = <&kp LC(INS)>;
+        key-positions = <LB3 LB2>;
+        layers = <COLEMAK_DH QUERTY>;
+        require-prior-idle-ms = <150>;
+      };
+      paste {
+        timeout-ms = <18>;
+        bindings = <&kp LS(INS)>;
+        key-positions = <LB2 LB1>;
+        layers = <COLEMAK_DH QUERTY>;
+        require-prior-idle-ms = <150>;
+      };
+    };
+
     keymap {
         compatible = "zmk,keymap";
         colemakdh_layer {
