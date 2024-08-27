@@ -9,7 +9,7 @@ Querty
 ![Imgur](https://i.imgur.com/OMmmfWw.png)
 
 Num
-![Imgur](https://i.imgur.com/70txcxD.png)
+![Imgur](https://i.imgur.com/dsTCsc7.png)
 
 Nav
 ![Imgur](https://i.imgur.com/YICzLky.png)

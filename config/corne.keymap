@@ -149,9 +149,9 @@
         //╭──────────┬──────────┬──────────┬──────────┬──────────┬──────────╮   ╭──────────┬──────────┬──────────┬──────────┬──────────┬──────────╮
             XXXXXX     &kp N8     &kp N7     &kp N3     &kp N0     &kp N5         &kp N6     &kp N2     &kp N1     &kp N9     &kp N4     XXXXXX
         //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
-            XXXXXX     C_HM_L(DLLR, LALT,    LPAR,      RPAR)      &kp AT         &kp BSLH   C_HM_R(MINUS, EQUAL,  RALT,      ASTRK)     XXXXXX
+            XXXXXX     C_HM_L(EXCL, DLLR,    LPAR,      RPAR)      &kp AT         &kp BSLH   C_HM_R(MINUS, EQUAL,  ASTRK,     CARET)     XXXXXX
         //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
-            XXXXXX     &kp EXCL   &kp HASH   XXXXXX     &kp SQT    &kp GRAVE      &kp AMPS   &kp LBKT   &kp RBKT   &kp PRCNT  &kp CARET  XXXXXX
+            XXXXXX     XXXXXX     XXXXXX     &kp HASH   &kp SQT    &kp GRAVE      &kp AMPS   &kp LBKT   &kp RBKT   &kp PRCNT  XXXXXX     XXXXXX
         //╰──────────┴──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────┴──────────╯
                                              ______     ______     XXXXXX          &kp DEL    C_LT(NAV, ESC) ______
         //                                 ╰──────────┴──────────┴──────────╯   ╰──────────┴──────────┴──────────╯
