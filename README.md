@@ -43,3 +43,10 @@ Git commit and push, GH Actions will build the firmware
    ```
 
    If your keymap is correct, you will see a progress in building until it fails; otherwise, it will simply fail outright
+
+#### Build locally with nix
+
+```
+$ cd ./path_to_this_repository
+$ just build all
+```
