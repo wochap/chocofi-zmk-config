@@ -28,6 +28,8 @@
             pkgs.dtc
             pkgs.ninja
             pkgs.qemu # needed for native_posix target
+
+            pkgs.just
           ];
         };
       });
