@@ -175,9 +175,9 @@
         fn_layer {
             bindings = <
         //╭──────────┬──────────┬──────────┬──────────┬──────────┬──────────╮   ╭──────────┬──────────┬──────────┬──────────┬──────────┬──────────╮
-            XXXXXX     &kp C_BRI_DN &kp C_BRI_UP XXXXXX XXXXXX     XXXXXX         XXXXXX     &kp C_PREV &kp C_PP   &kp C_NEXT &kp C_MUTE XXXXXX
+            XXXXXX     XXXXXX     XXXXXX     XXXXXX     XXXXXX     XXXXXX         XXXXXX     XXXXXX     &kp C_PP   XXXXXX     XXXXXX     XXXXXX
         //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
-            XXXXXX     &kp C_VOL_DN XXXXXX   XXXXXX     XXXXXX     XXXXXX         XXXXXX     XXXXXX     XXXXXX     XXXXXX     &kp C_VOL_UP XXXXXX
+            XXXXXX     XXXXXX     XXXXXX     &kp C_BRI_UP &kp C_BRI_DN XXXXXX     &kp C_PREV &kp C_VOL_DN &kp C_VOL_UP &kp C_NEXT &kp C_MUTE XXXXXX
         //├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
             XXXXXX     XXXXXX     XXXXXX     XXXXXX     XXXXXX     XXXXXX         XXXXXX     XXXXXX     XXXXXX     XXXXXX     XXXXXX     XXXXXX
         //╰──────────┴──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────┴──────────╯
