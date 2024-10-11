@@ -49,4 +49,5 @@ Git commit and push, GH Actions will build the firmware
 ```
 $ cd ./path_to_this_repository
 $ just build all
+$ # copy `firmware` folder content to `nice nano`
 ```
