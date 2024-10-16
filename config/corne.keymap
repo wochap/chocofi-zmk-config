@@ -35,7 +35,7 @@
         c_hm_l: homerow_left_mod {
             compatible = "zmk,behavior-hold-tap";
             quick-tap-ms = <150>; // tap held if same key is pressed twice within that time
-            tapping-term-ms = <250>;
+            tapping-term-ms = <275>;
             require-prior-idle-ms = <150>; // tap if prev non modifier key was pressed within that time
             flavor = "balanced"; // hold if another key is both pressed and released within the tapping term
             #binding-cells = <2>;
@@ -47,7 +47,7 @@
         c_hm_r: homerow_right_mod {
             compatible = "zmk,behavior-hold-tap";
             quick-tap-ms = <150>; // tap held if same key is pressed twice within that time
-            tapping-term-ms = <250>;
+            tapping-term-ms = <275>;
             require-prior-idle-ms = <150>; // tap if prev non modifier key was pressed within that time
             flavor = "balanced"; // hold if another key is both pressed and released within the tapping term
             #binding-cells = <2>;
