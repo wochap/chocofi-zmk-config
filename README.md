@@ -46,6 +46,17 @@ Git commit and push, GH Actions will build the firmware
 
 #### Build locally with nix
 
+First time
+
+```
+$ cd ./path_to_this_repository
+$ nix develop .#
+$ just clean-all
+$ just init
+```
+
+Then
+
 ```
 $ cd ./path_to_this_repository
 $ nix develop .#
