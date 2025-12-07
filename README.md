@@ -12,7 +12,7 @@ Num
 ![Imgur](https://i.imgur.com/dsTCsc7.png)
 
 Nav
-![Imgur](https://i.imgur.com/YICzLky.png)
+![Imgur](https://i.imgur.com/uWaJWTx.png)
 
 Adjust
 ![Imgur](https://i.imgur.com/0K5iIqP.png)
