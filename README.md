@@ -2,22 +2,7 @@
 
 ### Layers
 
-ColemakDH
-![Imgur](https://i.imgur.com/1igKPoQ.jpg)
-
-Querty
-![Imgur](https://i.imgur.com/OMmmfWw.png)
-
-Num
-![Imgur](https://i.imgur.com/dsTCsc7.png)
-
-Nav
-![Imgur](https://i.imgur.com/uWaJWTx.png)
-
-Adjust
-![Imgur](https://i.imgur.com/0K5iIqP.png)
-
-> Images generated with http://www.keyboard-layout-editor.com/, use the files in `assets` folder
+![Chocofi keymap](draw/corne.svg)
 
 ### Flashing
 
@@ -63,3 +48,16 @@ $ nix develop .#
 $ just build all
 $ # copy `firmware` folder content to `nice nano`
 ```
+
+#### Draw the keymap
+
+The Nix development environment includes
+[keymap-drawer](https://github.com/caksoylar/keymap-drawer). Generate the parsed
+keymap and SVG image with:
+
+```sh
+nix develop
+just draw
+```
+
+The generated files are written to `draw/corne.yaml` and `draw/corne.svg`.

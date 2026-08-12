@@ -4,6 +4,15 @@ default:
 config := absolute_path('config')
 build := absolute_path('.build')
 out := absolute_path('firmware')
+draw := absolute_path('draw')
+
+# parse and draw the keymap as SVG
+draw:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    mkdir -p "{{ draw }}"
+    keymap parse -z "{{ config }}/corne.keymap" >"{{ draw }}/corne.yaml"
+    keymap draw "{{ draw }}/corne.yaml" >"{{ draw }}/corne.svg"
 
 # parse combos.dtsi and adjust settings to not run out of slots
 _parse_combos:
@@ -88,4 +97,3 @@ list:
 # update west
 update:
     west update
-
