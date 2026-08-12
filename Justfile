@@ -87,7 +87,7 @@ clean-all: clean
 # initialize west
 init:
     west init -l config
-    west update
+    west update --narrow --fetch-opt=--filter=blob:none
     west zephyr-export
 
 # list build targets
@@ -96,4 +96,4 @@ list:
 
 # update west
 update:
-    west update
+    west update --narrow --fetch-opt=--filter=blob:none
