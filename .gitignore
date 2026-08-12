@@ -6,3 +6,6 @@ firmware/
 modules/
 zephyr/
 zmk/
+openspec/changes/archive
+.codex
+.qwen

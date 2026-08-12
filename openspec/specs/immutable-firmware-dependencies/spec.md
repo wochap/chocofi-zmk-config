@@ -1,4 +1,9 @@
-## ADDED Requirements
+# Immutable Firmware Dependencies Specification
+
+## Purpose
+Define the immutable source revisions, Nix inputs, toolchain, and module constraints required for reproducible firmware builds.
+
+## Requirements
 
 ### Requirement: Exact ZMK source
 The west manifest SHALL fetch ZMK from `https://github.com/zmkfirmware/zmk` at full commit `edf5c0814fd3ea202e43aad2d68fd32e882a518c`. The corresponding `v0.3.0` name SHALL appear only in comments and documentation, never as the effective revision.

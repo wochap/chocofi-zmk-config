@@ -1,4 +1,9 @@
-## ADDED Requirements
+# Chocofi Firmware Behavior Specification
+
+## Purpose
+Define the required hardware roles, physical layout, layers, key behaviors, combos, and power behavior for the Chocofi firmware.
+
+## Requirements
 
 ### Requirement: Split hardware identity and roles
 The firmware SHALL target a 36-key Chocofi using two `nice_nano_v2` controllers and the official Corne split shield. The `corne_left` image SHALL be the split central, the `corne_right` image SHALL be the split peripheral, and the host-visible keyboard name SHALL be `Chocochap`.
