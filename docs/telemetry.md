@@ -118,8 +118,19 @@ false. Its image must likewise contain no `key_telemetry` symbols.
 ## Manual BlueZ verification
 
 Flash both halves (right first, as usual), pair and connect the `Chocochap`
-keyboard using the desktop Bluetooth UI or `bluetoothctl`, and then use
-`bluetoothctl`'s GATT menu:
+keyboard using the desktop Bluetooth UI or `bluetoothctl`. The small repository
+tester finds a single paired device named `Chocochap`, subscribes, and decodes
+the records:
+
+```sh
+python3 scripts/test-telemetry.py
+
+# If auto-detection is ambiguous, pass the BlueZ device address:
+python3 scripts/test-telemetry.py XX:XX:XX:XX:XX:XX
+```
+
+It requires only Python 3 and `bluetoothctl`, does not need root, and does not
+open any input device. Alternatively, use `bluetoothctl`'s GATT menu directly:
 
 ```text
 bluetoothctl

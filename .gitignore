@@ -7,3 +7,4 @@
 firmware
 zmk
 /zephyr
+__pycache__
