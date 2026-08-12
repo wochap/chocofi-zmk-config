@@ -8,11 +8,47 @@ manifest:
       url-base: https://github.com/urob
   projects:
     - name: zmk
-      # The telemetry module is verified against this exact going-modular commit.
+      # Keep the first ZMK manifest layer flattened here so every revision that
+      # selects firmware source is an immutable commit rather than a tag.
       revision: 17d2dfb6c0c17c8b777fd9d47e9322402d68eb39
-      path: .
+      path: zmk
+      west-commands: app/scripts/west-commands.yml
+    - name: zephyr
+      remote: upstream
+      repo-path: zephyr
+      revision: dacab4875df72109b96cc8977547a0dc04875bcd
+      # The import prefix applies to this project path as well.
+      path: zephyr
       import:
-        file: app/west.yml
-        path-prefix: zmk
+        path-prefix: zmk/modules/zephyr
+        name-blocklist:
+          - ci-tools
+          - hal_altera
+          - hal_cypress
+          - hal_infineon
+          - hal_microchip
+          - hal_nxp
+          - hal_openisa
+          - hal_silabs
+          - hal_xtensa
+          - hal_st
+          - hal_ti
+          - loramac-node
+          - mcuboot
+          - mcumgr
+          - net-tools
+          - openthread
+          - edtt
+          - trusted-firmware-m
+    - name: nanopb
+      remote: upstream
+      repo-path: nanopb
+      revision: 8c60555d6277a0360c876bd85d491fc4fb0cd74a
+      path: zmk/modules/lib/nanopb
+    - name: zmk-studio-messages
+      remote: upstream
+      repo-path: zmk-studio-messages
+      revision: 6cb4c283e76209d59c45fbcb218800cd19e9339d
+      path: zmk/modules/msgs/zmk-studio-messages
   self:
     path: config
