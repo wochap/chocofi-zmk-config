@@ -9,3 +9,4 @@ zmk/
 openspec/changes/archive
 .codex
 .qwen
+scripts/__pycache__
