@@ -5,8 +5,9 @@ This repository builds firmware for a 36-key low-profile Chocofi with two
 half is the split central and the right half is the split peripheral. The
 Bluetooth name is `Chocochap`.
 
-The project is intentionally local-only. It has no CI build matrix and no
-telemetry module.
+The project is intentionally local-only and has no CI build matrix. It includes
+optional encrypted key/layer telemetry on the left central; ordinary HID use
+and the right peripheral firmware do not require telemetry.
 
 ## Locked firmware base
 
@@ -23,8 +24,8 @@ builds use only the full commit hashes.
 `config/west.yml` pins ZMK and overrides its symbolic Zephyr import with the
 exact Zephyr commit above. Imported west projects remain pinned by the
 immutable manifests at those commits. `flake.lock` fixes every Nix input and
-content hash. The development shell provides West 1.2.0, Zephyr SDK 0.16.8,
-and keymap-drawer 0.23.0.
+content hash. The development shell provides West, Zephyr SDK 0.16.8, a host C
+compiler, Python 3, BlueZ's `bluetoothctl`, and keymap-drawer.
 
 ## Initialize locally with Nix
 
@@ -38,6 +39,16 @@ just init
 `just init` initializes the repository as a west workspace, checks out the
 pinned projects, and exports Zephyr's CMake package. Run `just update` later to
 restore the same declared immutable revisions; it does not advance them.
+
+Run the host checks before building:
+
+```sh
+just test
+python3 -m py_compile scripts/test-telemetry.py
+```
+
+The protocol test compiles as C11 with warnings as errors in a temporary
+directory that the recipe removes on completion.
 
 ## Build firmware
 
@@ -54,8 +65,11 @@ Or build both with:
 just build-all
 ```
 
-Every recipe requests a pristine build for `nice_nano_v2`. The copied output
-files are:
+Every recipe requests a pristine build for `nice_nano_v2` and passes the
+absolute vendored `modules/zmk-key-telemetry` path through `ZMK_EXTRA_MODULES`.
+The module is discovered for both halves but enabled only by
+`config/corne_left.conf`; it is not a west project and does not modify pinned
+ZMK or Zephyr. The copied output files are:
 
 - `firmware/corne_left-nice_nano_v2.uf2` — central, host-facing half
 - `firmware/corne_right-nice_nano_v2.uf2` — peripheral half
@@ -72,6 +86,31 @@ bootloader drive.
 After flashing, verify base typing, home-row holds, thumb layer-taps, layer
 transitions, editing combos, Bluetooth profiles, and USB/BLE output selection.
 If hardware-only behavior differs, reflash the retained recovery images.
+
+If BlueZ does not discover telemetry after an upgrade, remove and re-pair
+`Chocochap` to clear its stale GATT cache.
+
+## Optional BLE telemetry
+
+The left firmware exposes an encrypted read/notify protocol-v1 record containing
+native global positions `0-35`, complete pressed and active-layer state,
+sequence, and timestamp. It sends no labels, bindings, or geometry; desktop
+presentation remains in `draw/corne.yaml`. The listener bubbles normal ZMK
+events, and telemetry loss cannot block HID or split operation.
+
+After flashing right first and left second, pair or re-pair the keyboard and run
+the verifier on a host with Bluetooth access:
+
+```sh
+python3 scripts/test-telemetry.py
+python3 scripts/test-telemetry.py XX:XX:XX:XX:XX:XX
+```
+
+The Nix shell provides Python and `bluetoothctl`, but a container still needs
+access to the host Bluetooth controller and system BlueZ D-Bus for live use.
+See [docs/telemetry.md](docs/telemetry.md) for stable UUIDs, the protocol table,
+synchronization/loss behavior, direct build commands, cache recovery, and the
+manual verification procedure.
 
 ## Keymap structure
 

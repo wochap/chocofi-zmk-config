@@ -32,10 +32,13 @@
               pkgs.coreutils
               pkgs.dtc
               pkgs.findutils
+              pkgs.gcc
               pkgs.git
               pkgs.gnugrep
               pkgs.gnused
               pkgs.ninja
+              pkgs.python3
+              pkgs.bluez
 
               pkgs.just
               pkgs.keymap-drawer

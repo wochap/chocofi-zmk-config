@@ -25,6 +25,17 @@ build-right:
 # Build both halves.
 build-all: build-left build-right
 
+# Compile and run the host-side telemetry protocol tests.
+test:
+    test_dir="$(mktemp -d)"; \
+    trap 'rm -rf -- "$test_dir"' EXIT; \
+    "${CC:-cc}" -std=c11 -Wall -Wextra -Werror -pedantic \
+        -Imodules/zmk-key-telemetry/include \
+        modules/zmk-key-telemetry/src/protocol.c \
+        modules/zmk-key-telemetry/tests/test_protocol.c \
+        -o "$test_dir/test_protocol"; \
+    "$test_dir/test_protocol"
+
 # Generate keymap-drawer's parsed YAML and six-layer SVG.
 draw:
     mkdir -p draw
@@ -37,6 +48,7 @@ clean:
 
 [private]
 _build half:
-    mkdir -p firmware
-    west build -p always -s zmk/app -d ".build/corne_{{ half }}-nice_nano_v2" -b nice_nano_v2 -- -DSHIELD="corne_{{ half }}" -DZMK_CONFIG="${PWD}/config"
+    mkdir -p firmware; \
+    module_path="$(realpath modules/zmk-key-telemetry)"; \
+    west build -p always -s zmk/app -d ".build/corne_{{ half }}-nice_nano_v2" -b nice_nano_v2 -- -DSHIELD="corne_{{ half }}" -DZMK_CONFIG="${PWD}/config" -DZMK_EXTRA_MODULES="$module_path"
     install -Dm644 ".build/corne_{{ half }}-nice_nano_v2/zephyr/zmk.uf2" "firmware/corne_{{ half }}-nice_nano_v2.uf2"
