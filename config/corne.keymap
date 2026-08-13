@@ -127,3 +127,6 @@
         };
     };
 };
+
+// vim: filetype=c
+// vim: syntax=off
