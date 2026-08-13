@@ -2,12 +2,14 @@ manifest:
   remotes:
     - name: zmkfirmware
       url-base: https://github.com/zmkfirmware
+    - name: wochap
+      url-base: https://github.com/wochap
 
   projects:
     - name: zmk
-      remote: zmkfirmware
-      # Official ZMK v0.3.0.
-      revision: edf5c0814fd3ea202e43aad2d68fd32e882a518c
+      remote: wochap
+      # v0.3-branch-fork with synchronous effective HID modifier snapshots.
+      revision: a301f6d562bd67f18e496402f8cf6c87326b05b2
       path: zmk
       import:
         file: app/west.yml
