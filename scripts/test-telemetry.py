@@ -13,10 +13,15 @@ import time
 
 CHAR_UUID = "9e7a7d70-df1b-4f76-9d45-8c3f4a6b2101"
 ANSI = re.compile(r"\x1b\[[0-?]*[ -/]*[@-~]")
-# bluetoothctl may print the complete 20-byte value on one line.  Do not cap
+# bluetoothctl may print the complete 48-byte value on one line.  Do not cap
 # this at the conventional 16-byte hex-dump width.
 HEX_LINE = re.compile(r"(?<![0-9a-fA-F])((?:[0-9a-fA-F]{2}(?:\s+|$))+)")
-TYPES = {1: "snapshot", 2: "key", 3: "layers"}
+FRAME_SIZE = 48
+FIELD_NAMES = (
+    "positions", "layers", "modifiers", "indicators", "default-layer",
+    "endpoint", "central-battery", "peripheral-battery", "split",
+)
+MODIFIER_NAMES = ("LCTL", "LSFT", "LALT", "LGUI", "RCTL", "RSFT", "RALT", "RGUI")
 
 
 def find_keyboard():
@@ -34,26 +39,78 @@ def find_keyboard():
 
 
 def decode(data):
-    if len(data) != 20:
+    if len(data) != FRAME_SIZE:
         return f"invalid record length {len(data)}: {data.hex(' ')}"
-    if data[0] != 1:
+    if data[0] != 2:
         return f"unsupported protocol version {data[0]}: {data.hex(' ')}"
+    declared_size = int.from_bytes(data[2:4], "little")
+    if declared_size != FRAME_SIZE:
+        return f"invalid declared frame size {declared_size}: {data.hex(' ')}"
+    if data[1] & ~1:
+        return f"unknown frame flags 0x{data[1]:02x}: {data.hex(' ')}"
 
-    kind = TYPES.get(data[1], f"unknown({data[1]})")
-    pressed = bool(data[2] & 1)
-    position = None if data[3] == 0xFF else data[3]
-    sequence = int.from_bytes(data[4:6], "little")
-    timestamp = int.from_bytes(data[6:10], "little")
-    layers = int.from_bytes(data[10:14], "little")
-    positions = int.from_bytes(data[14:20], "little")
-    down = [str(i) for i in range(48) if positions & (1 << i)]
+    sequence = int.from_bytes(data[4:8], "little")
+    timestamp = int.from_bytes(data[8:16], "little")
+    positions = int.from_bytes(data[16:24], "little")
+    layers = int.from_bytes(data[24:28], "little")
+    changed = int.from_bytes(data[28:32], "little")
+    valid = int.from_bytes(data[32:36], "little")
+    modifiers = data[36]
+    indicators = data[37]
+    default_layer = data[38]
+    transport_value = data[39]
+    transport = {0: "unknown", 1: "USB", 2: "BLE"}.get(transport_value)
+    profile = data[40]
+    central_battery = data[41]
+    peripheral_battery = data[42]
+    split_value = data[43]
+    split = {0: "unknown", 1: "down", 2: "up"}.get(split_value)
+    dropped = int.from_bytes(data[44:48], "little")
 
-    event = ""
-    if kind == "key":
-        event = f" pos={position} {'DOWN' if pressed else 'UP'}"
+    if transport is None:
+        return f"invalid transport {transport_value}: {data.hex(' ')}"
+    if split is None:
+        return f"invalid split status {split_value}: {data.hex(' ')}"
+    if valid & (1 << 4) and default_layer >= 32:
+        return f"invalid default layer {default_layer}: {data.hex(' ')}"
+    if valid & (1 << 5):
+        if transport == "unknown":
+            return f"valid endpoint has unknown transport: {data.hex(' ')}"
+        if transport == "BLE" and profile == 0xff:
+            return f"valid BLE endpoint has unknown profile: {data.hex(' ')}"
+        if transport == "USB" and profile != 0xff:
+            return f"valid USB endpoint has BLE profile {profile}: {data.hex(' ')}"
+    if valid & (1 << 6) and central_battery > 100:
+        return f"invalid central battery {central_battery}: {data.hex(' ')}"
+    if valid & (1 << 7) and peripheral_battery > 100:
+        return f"invalid peripheral battery {peripheral_battery}: {data.hex(' ')}"
+    if valid & (1 << 8) and split == "unknown":
+        return f"valid split status is unknown: {data.hex(' ')}"
+
+    down = [str(i) for i in range(64) if positions & (1 << i)]
+    mods = [name for bit, name in enumerate(MODIFIER_NAMES) if modifiers & (1 << bit)]
+    changed_names = [name for bit, name in enumerate(FIELD_NAMES) if changed & (1 << bit)]
+    valid_names = [name for bit, name in enumerate(FIELD_NAMES) if valid & (1 << bit)]
+    kind = "snapshot" if data[1] & 1 else "state"
+
+    optional = []
+    if valid & (1 << 3):
+        optional.append(f"leds=0x{indicators:02x}")
+    if valid & (1 << 5):
+        optional.append(f"output={transport}{profile if transport == 'BLE' else ''}")
+    if valid & (1 << 6):
+        optional.append(f"left-batt={central_battery}%")
+    if valid & (1 << 7):
+        optional.append(f"right-batt={peripheral_battery}%")
+    if valid & (1 << 8):
+        optional.append(f"split={split}")
+
     return (
-        f"seq={sequence:5} t={timestamp:10}ms {kind:8}{event} "
-        f"layers=0x{layers:08x} keys=[{','.join(down)}]"
+        f"seq={sequence:10} t={timestamp:12}ms {kind:8} "
+        f"changed=[{','.join(changed_names)}] valid=[{','.join(valid_names)}] "
+        f"layers=0x{layers:08x} "
+        f"default={default_layer if valid & (1 << 4) else '?'} keys=[{','.join(down)}] "
+        f"mods=[{','.join(mods)}] drops={dropped} {' '.join(optional)}"
     )
 
 
@@ -126,8 +183,8 @@ def main():
                 if not match:
                     continue
                 pending.extend(int(value, 16) for value in match.group(1).split())
-                if len(pending) >= 20:
-                    print(decode(bytes(pending[:20])), flush=True)
+                if len(pending) >= FRAME_SIZE:
+                    print(decode(bytes(pending[:FRAME_SIZE])), flush=True)
                     first_record = True
                     pending.clear()
                     collecting = False

@@ -1,147 +1,105 @@
 # Validation record
 
-Validation was completed on 12 August 2026 in the locked Nix shell.
+Validation was completed on 13 August 2026 in the locked development
+environment. Live flashing remains a separate hardware step.
 
-## Telemetry host checks
+## Protocol and consumer checks
 
-The updated locked shell evaluated without changing `flake.lock` and provided:
+- `just test` compiled the explicit protocol-v2 encoder as C11 with
+  `-Wall -Wextra -Werror -pedantic`; every exact-byte, offset, mask, sentinel,
+  layer, timestamp, sequence, and 64-position-boundary assertion passed.
+- `python3 -m py_compile scripts/test-telemetry.py` passed. The verifier now
+  requires exactly 48 bytes, version 2, declared size 48, known flags, valid
+  enum combinations, valid percentages, and validity-aware sentinels.
+- In `kb-hud`, Vitest passed all 38 frontend/overlay tests and the TypeScript +
+  Vite production build passed.
+- In the `kb-hud` Nix shell, all 14 Rust decoder/state/config tests passed.
+  The modified Rust sources were formatted with the shell's `rustfmt`.
+- Both repositories' `telemetry-state-frame-v2` OpenSpec changes pass strict
+  validation.
 
-- GCC 15.2.0;
-- Python 3.11.8;
-- BlueZ `bluetoothctl` 5.86;
-- West 1.2.0, CMake 4.1.2, Ninja 1.13.2, Just 1.51.0, and
-  keymap-drawer 0.23.0;
-- Zephyr SDK 0.16.8 at the shell-provided `ZEPHYR_SDK_INSTALL_DIR`.
+## Dependency and API audit
 
-`just test` compiled the protocol encoder as C11 with `-Wall -Wextra -Werror
--pedantic` and all exact-byte, constant, default-layer, and native-position
-boundary tests passed. `python3 -m py_compile scripts/test-telemetry.py` also
-passed without accessing Bluetooth hardware.
+`config/west.yml` and the local checkout resolve exactly to:
 
-## Dependency resolution
+| Component | Revision |
+| --- | --- |
+| `wochap/zmk` | `a301f6d562bd67f18e496402f8cf6c87326b05b2` |
+| ZMK Zephyr fork | `dacab4875df72109b96cc8977547a0dc04875bcd` |
 
-- `flake.lock` contains seven non-root inputs; each has a 40-character commit
-  and a Nix content hash.
-- The development shell reports West 1.2.0, Zephyr SDK 0.16.8, and
-  keymap-drawer 0.23.0.
-- A fresh `just init` resolved 39 active west projects. Every declared
-  revision was a 40-character commit and every checkout HEAD matched it.
-- ZMK HEAD was `edf5c0814fd3ea202e43aad2d68fd32e882a518c`.
-- Zephyr HEAD was `dacab4875df72109b96cc8977547a0dc04875bcd`.
-- Both pinned checkouts remained clean after the telemetry builds. Neither
-  `config/west.yml` nor `flake.lock` changed, and the resolved west graph
-  contains no telemetry or helper project.
-- Both build caches resolved `ZMK_EXTRA_MODULES` to the sole absolute vendored
-  path `modules/zmk-key-telemetry`; no source was copied into ZMK or Zephyr.
+Both checkouts were clean after pristine builds. The ZMK fork contains and
+compiles `zmk_hid_modifiers_changed`; `hid.c` raises its complete effective byte
+only after updating `keyboard_report.body.modifiers`. Telemetry samples that
+same report through `zmk_hid_get_keyboard_report()` after deferred coalescing.
+
+The following public sources were verified in this exact checkout and compiled
+in the left image:
+
+- `zmk_keymap_layer_state()` and `zmk_keymap_layer_default()`;
+- `zmk_endpoints_selected()` and `zmk_ble_active_profile_conn()`;
+- `zmk_hid_indicators_get_current_profile()`;
+- `zmk_battery_state_of_charge()`;
+- central-side `zmk_peripheral_battery_state_changed` events when split battery
+  fetching is enabled.
+
+The proposed split connection field does not have a usable central-side source
+in this pinned ZMK revision. `zmk_split_peripheral_status_changed` is raised by
+the split-peripheral Bluetooth implementation, while telemetry runs only on the
+central. The implementation therefore leaves bit 8 of `valid_fields` clear and
+encodes the unknown status sentinel. It does not add an invasive internal
+central connection hook merely to populate optional status.
 
 ## Firmware builds
 
-`just build-left` and `just build-right` performed pristine official-ZMK builds
-for both targets.
+Both targets were rebuilt pristine from the pinned fork.
 
-| Target | Role | UF2 size | SHA-256 |
-| --- | --- | ---: | --- |
-| `nice_nano_v2` + `corne_left` | central + telemetry | 443904 bytes | `50f03bf388efdff4c13a8bbba9c5b45b7a8f1fbfac62d179ade4078bab402e1c` |
-| `nice_nano_v2` + `corne_right` | peripheral | 346112 bytes | `d140d01b491e5795071dea57ee51d079de0dc20c0fb987ca969dedd80292eb32` |
+| Target | Role | Flash used | RAM used | UF2 size | SHA-256 |
+| --- | --- | ---: | ---: | ---: | --- |
+| `corne_left` | central + telemetry v2 | 224080 B | 52720 B | 448512 B | `ffc0f69ad531c0ff200fa00c5919770995e802cf80ca2c9e2f95efed124c9a45` |
+| `corne_right` | split peripheral | 172880 B | 32508 B | 346112 B | `d140d01b491e5795071dea57ee51d079de0dc20c0fb987ca969dedd80292eb32` |
 
-Generated Kconfig was checked for `Chocochap`, split role, USB/BLE as
-appropriate to the role, 30-minute sleep, +8 dBm transmit power, and the
-experimental BLE connection option.
+The left generated configuration contains:
 
-### Telemetry placement and binary isolation
+```text
+CONFIG_ZMK_HID_INDICATORS=y
+CONFIG_ZMK_SPLIT_ROLE_CENTRAL=y
+CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING=y
+CONFIG_ZMK_KEY_TELEMETRY=y
+CONFIG_ZMK_KEY_TELEMETRY_COALESCE_MS=1
+CONFIG_BT_L2CAP_TX_MTU=65
+```
 
-The left generated configuration contains
-`CONFIG_ZMK_KEY_TELEMETRY=y`, queue depth 8, and
-`CONFIG_ZMK_SPLIT_ROLE_CENTRAL=y`. Its build graph compiles both
-`src/protocol.c` and `src/telemetry.c`. The linked ELF contains the encoder,
-connection callback, GATT service attributes, position/layer/profile
-subscriptions, and listener symbols. Both stable UUIDs were found in the final
-BIN and UF2 in Zephyr's little-endian encoding.
+The right configuration contains `CONFIG_BT_L2CAP_TX_MTU=65` but no telemetry,
+central-role, HID-indicator, or central split-battery-fetch assignment. Its
+compile database contains neither telemetry source. Its ELF contains no
+telemetry symbol/string, and neither stable UUID byte sequence appears in its
+copied UF2. Both UUIDs and all telemetry listener/encoder symbols are present
+in the left image.
 
-The right generated configuration has no telemetry assignment and does not set
-the split-central role. Its build graph has no telemetry object, and its map,
-ELF symbol table, and ELF strings contain no telemetry implementation,
-listener, or service identifiers. Neither UUID byte sequence occurs in the
-right BIN, build UF2, or copied UF2.
-
-### Resource comparison
-
-A pristine `corne_left` control used the same config and vendored module path
-but applied only `CONFIG_ZMK_KEY_TELEMETRY=n`. Its generated devicetree was
-byte-identical to the enabled build and it compiled no telemetry objects.
-
-| Build | Flash used | RAM used | UF2 size |
-| --- | ---: | ---: | ---: |
-| Left, telemetry enabled | 221844 bytes | 52776 bytes | 443904 bytes |
-| Left, telemetry disabled | 220196 bytes | 52376 bytes | 440832 bytes |
-| Telemetry delta | **+1648 bytes** | **+400 bytes** | **+3072 bytes** |
-| Right, telemetry excluded | 172880 bytes | 32508 bytes | 346112 bytes |
-
-The disabled left control reproduced the original left artifact exactly:
-SHA-256 `7cddb0859f603996d3423861d7292a0aa8538a683bdbed26ac96e38350146b1f`.
-The right artifact likewise retained its pre-telemetry size and SHA-256, proving
-that module discovery adds no peripheral resource or binary delta.
-
-## Behavior audit
-
-The official v0.3.0 `zmk,behavior-hold-tap` binding schema contains every
-property used by this configuration. Both compiled devicetrees retain:
-
-- balanced home-row hold-taps with 275 ms tapping term, 150 ms quick tap,
-  150 ms prior-idle requirement, opposite-hand plus thumb triggers, and
-  `hold-trigger-on-release`;
-- the hold-preferred layer-tap with 125 ms tapping term and 150 ms quick tap;
-- the NAV-to-NUM macro sequence and 1 ms wait;
-- all four combos on layers 0 and 1 with 18 ms timeout and 150 ms prior-idle
-  requirement;
-- layer nodes in the required `0-5` order and the official five-column Corne
-  physical layout.
-
-The generated 36-key YAML was compared with the behavioral repository's
-42-slot output after removing only the six unused outer-column placeholders
-and translating physical positions. All finger keys, thumb bindings,
-home-row modifiers, layer access, macro placement, Bluetooth controls,
-USB/BLE controls, external-power controls, bootloader/reset controls, and
-combo bindings matched.
-
-After the telemetry integration, `just draw` regenerated byte-identical YAML
-and SVG files. The YAML still contains six layers with 36 bindings each and
-four combos. Both final devicetrees retained the audited behavior properties.
+The compile-time capacity assertion proves the 48-byte frame plus 3-byte ATT
+header fits the configured local TX MTU of 65. The runtime path separately
+checks `bt_gatt_get_mtu(conn) >= 51` before every notification. External
+`btmon` verification established a negotiated ATT MTU of 65 (62-byte
+notification value capacity) for the intended BlueZ connection.
 
 ## Hardware verification status
 
-Live flashing and telemetry verification were not performed in this container.
-The environment exposes an `hci0` device and the system D-Bus socket, but the
-BlueZ service is inactive; `bluetoothctl list` produced no controller response
-and timed out after five seconds. Starting host services, flashing physical
-controllers, and changing pairings are outside this repository-only run.
+No live flashing or key interaction is claimed by this repository-only run.
+On accessible hardware:
 
-The known-good telemetry-disabled left control remains at
-`.build/corne_left-control-nice_nano_v2/zephyr/zmk.uf2`, with the exact original
-left SHA-256 recorded above. The current right artifact is also byte-identical
-to its known-good predecessor. On accessible hardware, the remaining steps are:
+1. Retain matching known-good firmware and HUD builds.
+2. Flash the right/peripheral image first, then the left/central image.
+3. Remove and re-pair `Chocochap` if BlueZ retained the old characteristic
+   value shape in its GATT cache.
+4. Run `python3 scripts/test-telemetry.py`; confirm the snapshot and 48-byte
+   frames, both halves' positions, complete layers, home-row modifier holds,
+   endpoint/profile, indicators, and both available batteries.
+5. Run `kb-hud`; confirm a held Shift modifier is distinguished from its tap
+   key and `/` previews as `?`, while normal HID typing remains unaffected.
+6. Confirm the split-status UI remains hidden because its validity bit is
+   intentionally clear in this firmware revision.
 
-1. Retain copies of both known-good images.
-2. Flash the right/peripheral image first and left/central image second.
-3. Remove/re-pair `Chocochap` if BlueZ cached the old GATT database.
-4. Run `python3 scripts/test-telemetry.py` and verify the initial snapshot,
-   press/release and overlapping-key state from both halves, positions `0-35`,
-   complete NUM/NAV/FN/ADJUST masks, sequence progression, and normal HID.
-
-No live result is claimed here. Rollback remains flashing the retained right
-image first and retained left image second; telemetry changes no stored keymap
-data.
-
-## Upstream warnings
-
-The pinned upstream stack emits two warnings which do not indicate ignored
-devicetree properties:
-
-- both halves enable Zephyr's deprecated
-  `NRF_STORE_REBOOT_TYPE_GPREGRET` through the upstream board configuration;
-- the right/peripheral build reports that upstream's requested `ZMK_USB=y` is
-  resolved to `n`, because USB is available only when the split role is
-  central. The left/central build retains USB.
-
-No unknown devicetree property warning was emitted, and every required
-hold-tap property was present in both generated devicetrees.
+The builds retain the two known upstream warnings: deprecated
+`NRF_STORE_REBOOT_TYPE_GPREGRET` on both halves, and the right build resolving
+the central-only requested `ZMK_USB=y` to `n`. No telemetry compile warning or
+unknown devicetree-property warning was emitted.

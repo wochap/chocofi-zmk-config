@@ -1,9 +1,10 @@
 # Chocofi ZMK configuration
 
 This repository builds firmware for a 36-key low-profile Chocofi with two
-`nice_nano_v2` controllers. It uses official ZMK v0.3.0 directly: the left
-half is the split central and the right half is the split peripheral. The
-Bluetooth name is `Chocochap`.
+`nice_nano_v2` controllers. It uses a pinned fork of the ZMK v0.3 release line
+with a synchronous effective-modifier snapshot event: the left half is the
+split central and the right half is the split peripheral. The Bluetooth name
+is `Chocochap`.
 
 The project is intentionally local-only and has no CI build matrix. It includes
 optional encrypted key/layer telemetry on the left central; ordinary HID use
@@ -16,7 +17,7 @@ builds use only the full commit hashes.
 
 | Component | Release | Effective revision |
 | --- | --- | --- |
-| ZMK | v0.3.0 | `edf5c0814fd3ea202e43aad2d68fd32e882a518c` |
+| ZMK fork | `wochap/zmk` `v0.3-branch-fork` | `a301f6d562bd67f18e496402f8cf6c87326b05b2` |
 | ZMK Zephyr fork | v3.5.0+zmk-fixes | `dacab4875df72109b96cc8977547a0dc04875bcd` |
 | Nixpkgs | nixos-26.05 snapshot (10 July 2026) | `0ad6f47ea4fe188f4bc8f0380f93ae8523337c6c` |
 | nix-community/zephyr-nix | SDK/Python packaging | `a12131ec450ea66e9005c668c31c8a055a766ef3` |
@@ -92,11 +93,21 @@ If BlueZ does not discover telemetry after an upgrade, remove and re-pair
 
 ## Optional BLE telemetry
 
-The left firmware exposes an encrypted read/notify protocol-v1 record containing
-native global positions `0-35`, complete pressed and active-layer state,
-sequence, and timestamp. It sends no labels, bindings, or geometry; desktop
-presentation remains in `draw/corne.yaml`. The listener bubbles normal ZMK
-events, and telemetry loss cannot block HID or split operation.
+The left firmware exposes an encrypted read/notify protocol-v2 authoritative
+state frame. Each 48-byte frame includes global pressed positions, active and
+default layers, the complete effective HID modifier byte, sequence/timestamp,
+validity and change masks, dropped-frame count, and—when available—HID
+indicators, selected transport/profile, both batteries, and split status. It
+sends no labels, bindings, or geometry; desktop presentation remains in
+`draw/corne.yaml`.
+
+Events only mark the snapshot dirty. A short deferred work item lets the
+current synchronous ZMK behavior chain settle, reads authoritative state, and
+emits one coalesced frame. The modifier source is the fork's
+`zmk_hid_modifiers_changed` event, raised after the effective HID report byte is
+updated. Every listener bubbles normal ZMK events, and telemetry loss cannot
+block HID or split operation. The runtime guard requires an ATT MTU of at least
+51; this keyboard has been measured negotiating MTU 65 (62 notification bytes).
 
 After flashing right first and left second, pair or re-pair the keyboard and run
 the verifier on a host with Bluetooth access:
@@ -125,16 +136,15 @@ Layer IDs are centralized in `config/layers.h` and remain:
 | 4 | FN |
 | 5 | ADJUST |
 
-The keymap selects
-official ZMK's `foostan_corne_5col_layout`, so every layer has the native 36
+The keymap selects ZMK's `foostan_corne_5col_layout`, so every layer has the native 36
 positions documented in `config/key_positions.h`. The historical six unused
 outer-column placeholders are gone; combos and positional hold triggers are
 translated by physical key into the `0-35` position space.
 
 Reusable home-row, layer-tap, and macro behaviors live in
 `config/custom_behaviors.dtsi`; layer bindings and combos remain readable in
-`config/corne.keymap`. All behavior definitions use official ZMK devicetree
-APIs without helper modules.
+`config/corne.keymap`. All behavior definitions use ZMK devicetree APIs without
+helper modules.
 
 Regenerate the committed keymap-drawer outputs with:
 

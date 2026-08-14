@@ -3,9 +3,11 @@
 .venv/
 .west/
 firmware/
-modules/
-zephyr/
-zmk/
+modules/*
+!modules/zmk-key-telemetry/
+!modules/zmk-key-telemetry/**
+/zephyr/
+/zmk/
 openspec/changes/archive
 .codex
 .qwen
