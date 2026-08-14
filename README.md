@@ -1,4 +1,6 @@
-# Chocofi ZMK configuration
+# Chocofi ZMK config
+
+![Chocofi keymap](draw/corne.svg)
 
 This repository builds firmware for a 36-key low-profile Chocofi with two
 `nice_nano_v2` controllers. It uses a pinned fork of the ZMK v0.3 release line
@@ -78,6 +80,8 @@ ZMK or Zephyr. The copied output files are:
 `just clean` removes only build and copied firmware outputs.
 
 ## Flashing
+
+**IMPORTANT:** Always flash the **RIGHT** side first, then the left side
 
 Keep a copy of the last known-good firmware as a recovery baseline. Flash the
 right/peripheral image first, then flash the left/central image. Put each
