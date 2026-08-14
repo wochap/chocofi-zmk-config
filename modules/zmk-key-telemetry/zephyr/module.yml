@@ -1,5 +1,0 @@
-name: zmk-key-telemetry
-
-build:
-  cmake: .
-  kconfig: Kconfig
