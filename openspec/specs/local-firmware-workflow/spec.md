@@ -1,4 +1,9 @@
-## ADDED Requirements
+# Local Firmware Workflow Specification
+
+## Purpose
+Define the local development, build, validation, drawing, and documentation workflow for producing both Chocofi firmware images.
+
+## Requirements
 
 ### Requirement: Nix development shell
 The repository SHALL provide a default Nix development shell containing all tools needed to initialize west, build both ARM firmware images, and regenerate the keymap drawing without relying on undeclared host development packages.
