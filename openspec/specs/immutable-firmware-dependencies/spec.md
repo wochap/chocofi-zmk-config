@@ -56,8 +56,16 @@ The Nix development shell SHALL provide an ARM Zephyr SDK 0.16.8 toolchain and t
 - **THEN** it finds Zephyr SDK 0.16.8 and a west version compatible with the pinned Zephyr release
 
 ### Requirement: No unnecessary firmware modules
-The dependency graph SHALL NOT add `zmk-helpers`, the previous telemetry module, or another third-party ZMK behavior module. All key behavior SHALL use APIs present in the pinned official ZMK source.
+The dependency graph SHALL NOT add `zmk-helpers` or another third-party ZMK behavior module. The first-party telemetry implementation SHALL remain vendored at `modules/zmk-key-telemetry`, SHALL be discovered through explicit `ZMK_EXTRA_MODULES` build wiring, and SHALL NOT be added as a west project or copied into the pinned official ZMK or Zephyr source tree. All key behavior SHALL continue to use APIs present in the pinned official ZMK source.
 
 #### Scenario: Inspect the resolved project list
-- **WHEN** west lists all projects and the build command is inspected
-- **THEN** no helper or telemetry module appears and no `ZMK_EXTRA_MODULES` argument is required
+- **WHEN** west lists all resolved projects
+- **THEN** no helper or telemetry project appears and the official ZMK and Zephyr revisions remain unchanged
+
+#### Scenario: Inspect module discovery
+- **WHEN** either firmware build command is inspected
+- **THEN** it passes only the vendored `modules/zmk-key-telemetry` path through `ZMK_EXTRA_MODULES`
+
+#### Scenario: Inspect ownership boundaries
+- **WHEN** telemetry and keyboard sources are reviewed
+- **THEN** reusable telemetry implementation is confined to its external module, keyboard-specific enablement is confined to `config/corne_left.conf`, and no telemetry implementation file exists under `zmk/`, `zephyr/`, or `config/`
