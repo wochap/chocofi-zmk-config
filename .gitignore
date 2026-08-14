@@ -2,7 +2,8 @@
 .direnv
 .venv
 .west
-modules
+/modules/*
+!/modules/zmk-key-telemetry/
 firmware
 zmk
-zephyr
+/zephyr

@@ -5,6 +5,7 @@ config := absolute_path('config')
 build := absolute_path('.build')
 out := absolute_path('firmware')
 draw := absolute_path('draw')
+module := absolute_path('modules/zmk-key-telemetry')
 
 # parse and draw the keymap as SVG
 draw:
@@ -57,7 +58,8 @@ _build_single $board $shield *west_args:
 
     echo "Building firmware for $artifact..."
     west build -s zmk/app -d "$build_dir" -b $board {{ west_args }} -- \
-        -DZMK_CONFIG="{{ config }}" ${shield:+-DSHIELD="$shield"}
+        -DZMK_CONFIG="{{ config }}" -DZMK_EXTRA_MODULES="{{ module }}" \
+        ${shield:+-DSHIELD="$shield"}
 
     if [[ -f "$build_dir/zephyr/zmk.uf2" ]]; then
         mkdir -p "{{ out }}" && cp "$build_dir/zephyr/zmk.uf2" "{{ out }}/$artifact.uf2"
@@ -75,6 +77,19 @@ build expr *west_args: _parse_combos
     echo "$targets" | while IFS=, read -r board shield; do
         just _build_single "$board" "$shield" {{ west_args }}
     done
+
+# run host-side tests for the fixed telemetry wire encoding
+test:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    test_dir=$(mktemp -d)
+    trap 'rm -rf "$test_dir"' EXIT
+    cc -std=c11 -Wall -Wextra -Werror \
+        -I"{{ module }}/include" \
+        "{{ module }}/src/protocol.c" \
+        "{{ module }}/tests/test_protocol.c" \
+        -o "$test_dir/test_protocol"
+    "$test_dir/test_protocol"
 
 # clear build cache and artifacts
 clean:

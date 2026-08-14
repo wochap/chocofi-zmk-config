@@ -4,6 +4,13 @@
 
 ![Chocofi keymap](draw/corne.svg)
 
+### BLE key telemetry
+
+The left/central half exposes an optional encrypted BLE GATT telemetry service
+for a future keymap overlay. It sends only runtime physical-position and active
+layer state; `draw/corne.yaml` remains the desktop-side presentation model.
+See [the telemetry protocol and verification guide](docs/telemetry.md).
+
 ### Flashing
 
 **IMPORTANT:** Always flash the **RIGHT** side first, then the left side
@@ -45,6 +52,7 @@ Then
 ```
 $ cd ./path_to_this_repository
 $ nix develop .#
+$ just test
 $ just build all
 $ # copy `firmware` folder content to `nice nano`
 ```

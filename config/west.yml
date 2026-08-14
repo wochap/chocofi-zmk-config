@@ -8,7 +8,8 @@ manifest:
       url-base: https://github.com/urob
   projects:
     - name: zmk
-      revision: going-modular
+      # The telemetry module is verified against this exact going-modular commit.
+      revision: 17d2dfb6c0c17c8b777fd9d47e9322402d68eb39
       path: .
       import:
         file: app/west.yml

@@ -1,5 +1,19 @@
 on: [push, pull_request, workflow_dispatch]
 
 jobs:
+  telemetry-protocol-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test telemetry protocol encoding
+        run: |
+          cc -std=c11 -Wall -Wextra -Werror \
+            -Imodules/zmk-key-telemetry/include \
+            modules/zmk-key-telemetry/src/protocol.c \
+            modules/zmk-key-telemetry/tests/test_protocol.c \
+            -o "${RUNNER_TEMP}/test_protocol"
+          "${RUNNER_TEMP}/test_protocol"
+
   build:
+    needs: telemetry-protocol-test
     uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
