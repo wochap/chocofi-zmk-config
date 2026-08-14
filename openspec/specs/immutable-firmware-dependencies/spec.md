@@ -6,11 +6,11 @@ Define the immutable source revisions, Nix inputs, toolchain, and module constra
 ## Requirements
 
 ### Requirement: Exact ZMK source
-The west manifest SHALL fetch ZMK from `https://github.com/zmkfirmware/zmk` at full commit `edf5c0814fd3ea202e43aad2d68fd32e882a518c`. The corresponding `v0.3.0` name SHALL appear only in comments and documentation, never as the effective revision.
+The west manifest SHALL fetch ZMK from `https://github.com/wochap/zmk` at full commit `a301f6d562bd67f18e496402f8cf6c87326b05b2` containing the snapshot-style `zmk_hid_modifiers_changed` contract. The corresponding `v0.3-branch-fork` name SHALL appear only in comments and documentation, never as the effective revision.
 
 #### Scenario: Resolve ZMK
 - **WHEN** west resolves and updates the manifest
-- **THEN** the ZMK project HEAD is exactly `edf5c0814fd3ea202e43aad2d68fd32e882a518c`
+- **THEN** the ZMK project HEAD is exactly `a301f6d562bd67f18e496402f8cf6c87326b05b2` and contains `app/include/zmk/events/hid_modifiers_changed.h`
 
 ### Requirement: Exact Zephyr source
 The west manifest and Nix Zephyr source input SHALL use `https://github.com/zmkfirmware/zephyr` at full commit `dacab4875df72109b96cc8977547a0dc04875bcd`. The corresponding `v3.5.0+zmk-fixes` name SHALL appear only in comments and documentation, never as the effective revision.
@@ -56,11 +56,11 @@ The Nix development shell SHALL provide an ARM Zephyr SDK 0.16.8 toolchain and t
 - **THEN** it finds Zephyr SDK 0.16.8 and a west version compatible with the pinned Zephyr release
 
 ### Requirement: No unnecessary firmware modules
-The dependency graph SHALL NOT add `zmk-helpers` or another third-party ZMK behavior module. The first-party telemetry implementation SHALL remain vendored at `modules/zmk-key-telemetry`, SHALL be discovered through explicit `ZMK_EXTRA_MODULES` build wiring, and SHALL NOT be added as a west project or copied into the pinned official ZMK or Zephyr source tree. All key behavior SHALL continue to use APIs present in the pinned official ZMK source.
+The dependency graph SHALL NOT add `zmk-helpers` or another third-party ZMK behavior module. The first-party telemetry implementation SHALL remain vendored at `modules/zmk-key-telemetry`, SHALL be discovered through explicit `ZMK_EXTRA_MODULES` build wiring, and SHALL NOT be added as a west project or copied into the pinned ZMK or Zephyr source tree. All telemetry integration SHALL consume public APIs and the modifier event present in the pinned fork.
 
 #### Scenario: Inspect the resolved project list
 - **WHEN** west lists all resolved projects
-- **THEN** no helper or telemetry project appears and the official ZMK and Zephyr revisions remain unchanged
+- **THEN** no helper or telemetry project appears and ZMK and Zephyr resolve to their exact requested commits
 
 #### Scenario: Inspect module discovery
 - **WHEN** either firmware build command is inspected
@@ -68,4 +68,4 @@ The dependency graph SHALL NOT add `zmk-helpers` or another third-party ZMK beha
 
 #### Scenario: Inspect ownership boundaries
 - **WHEN** telemetry and keyboard sources are reviewed
-- **THEN** reusable telemetry implementation is confined to its external module, keyboard-specific enablement is confined to `config/corne_left.conf`, and no telemetry implementation file exists under `zmk/`, `zephyr/`, or `config/`
+- **THEN** reusable telemetry implementation is confined to its external module, keyboard-specific enablement is confined to configuration, and the initialized ZMK and Zephyr worktrees remain unmodified
