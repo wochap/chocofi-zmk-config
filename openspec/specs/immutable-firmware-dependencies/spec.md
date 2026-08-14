@@ -56,16 +56,16 @@ The Nix development shell SHALL provide an ARM Zephyr SDK 0.16.8 toolchain and t
 - **THEN** it finds Zephyr SDK 0.16.8 and a west version compatible with the pinned Zephyr release
 
 ### Requirement: No unnecessary firmware modules
-The dependency graph SHALL NOT add `zmk-helpers` or another third-party ZMK behavior module. The first-party telemetry implementation SHALL remain vendored at `modules/zmk-key-telemetry`, SHALL be discovered through explicit `ZMK_EXTRA_MODULES` build wiring, and SHALL NOT be added as a west project or copied into the pinned ZMK or Zephyr source tree. All telemetry integration SHALL consume public APIs and the modifier event present in the pinned fork.
+The dependency graph SHALL NOT add `zmk-helpers` or unrelated ZMK behavior modules. It SHALL fetch `https://github.com/wochap/zmk-key-telemetry` as a west project at a full 40-character commit and check it out at `modules/zmk-key-telemetry`. Telemetry integration SHALL consume public APIs and the modifier event in the pinned ZMK fork.
 
 #### Scenario: Inspect the resolved project list
 - **WHEN** west lists all resolved projects
-- **THEN** no helper or telemetry project appears and ZMK and Zephyr resolve to their exact requested commits
+- **THEN** telemetry resolves from `wochap/zmk-key-telemetry` at the declared commit and no unrelated helper module appears
 
 #### Scenario: Inspect module discovery
 - **WHEN** either firmware build command is inspected
-- **THEN** it passes only the vendored `modules/zmk-key-telemetry` path through `ZMK_EXTRA_MODULES`
+- **THEN** it passes the west-managed `modules/zmk-key-telemetry` path through `ZMK_EXTRA_MODULES`
 
 #### Scenario: Inspect ownership boundaries
 - **WHEN** telemetry and keyboard sources are reviewed
-- **THEN** reusable telemetry implementation is confined to its external module, keyboard-specific enablement is confined to configuration, and the initialized ZMK and Zephyr worktrees remain unmodified
+- **THEN** reusable telemetry content is confined to its repository, keyboard-specific enablement is confined to configuration, and ZMK and Zephyr remain unmodified

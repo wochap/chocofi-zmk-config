@@ -20,19 +20,19 @@ The local workflow SHALL document and provide a command that initializes west fr
 - **THEN** west creates the workspace and checks out the complete pinned dependency graph
 
 ### Requirement: Explicit per-half builds
-The local workflow SHALL provide separate commands for `corne_left` and `corne_right` on `nice_nano_v2`, plus a command that builds both. Each build SHALL use `zmk/app` as its source, `config/` as `ZMK_CONFIG`, the vendored telemetry path as `ZMK_EXTRA_MODULES`, and a pristine or equivalently clean build directory.
+The local workflow SHALL provide separate commands for `corne_left` and `corne_right` on `nice_nano_v2`, plus a command that builds both. Each build SHALL use `zmk/app` as its source, `config/` as `ZMK_CONFIG`, the west-managed `modules/zmk-key-telemetry` checkout as `ZMK_EXTRA_MODULES`, and a pristine or equivalently clean build directory.
 
 #### Scenario: Build the left half
-- **WHEN** the user invokes the left build command after initialization
+- **WHEN** the user invokes the left build command after west initialization
 - **THEN** the workflow produces a clearly named left/central UF2 artifact with telemetry enabled
 
 #### Scenario: Build the right half
-- **WHEN** the user invokes the right build command after initialization
-- **THEN** the workflow produces a clearly named right/peripheral UF2 artifact with the telemetry implementation excluded
+- **WHEN** the user invokes the right build command after west initialization
+- **THEN** the workflow produces a clearly named right/peripheral UF2 artifact with telemetry excluded
 
 #### Scenario: Build all firmware
 - **WHEN** the user invokes the combined build command
-- **THEN** both per-half builds use the same explicit external-module path and both UF2 artifacts are placed in the documented firmware output directory
+- **THEN** both builds use the same west-managed module path and place both UF2 artifacts in the documented output directory
 
 ### Requirement: Keymap drawing workflow
 The local workflow SHALL parse `config/corne.keymap` with keymap-drawer and regenerate a YAML model and SVG drawing using the official five-column Corne physical layout.
@@ -64,11 +64,11 @@ The README SHALL identify the ZMK modifier-hook fork, exact ZMK and Zephyr commi
 - **THEN** they can test protocol v2 and produce telemetry-enabled left and telemetry-free right firmware artifacts from immutable sources
 
 ### Requirement: Telemetry verification workflow
-The repository SHALL provide a host-side fixed-protocol test and a manual BlueZ verifier. The script SHALL require only Python 3 and `bluetoothctl`, auto-detect one paired `Chocochap` or accept an explicit address, subscribe to the stable characteristic, reject invalid record length/version/declared size, and decode every protocol-v2 state field and mask.
+The keyboard repository SHALL provide a manual BlueZ verifier. The module repository SHALL provide the host-side fixed-protocol test. The local workflow SHALL run the module test from its west checkout and keep live BLE verification as a host-hardware step.
 
 #### Scenario: Run protocol unit tests
-- **WHEN** the host test command runs
-- **THEN** the protocol encoder compiles with warnings as errors and all exact 48-byte encoding, mask, sentinel, and layer tests pass
+- **WHEN** the host test command runs after west initialization
+- **THEN** the external module encoder compiles with warnings as errors and all exact 48-byte encoding, mask, sentinel, and layer tests pass
 
 #### Scenario: Subscribe through BlueZ
 - **WHEN** the verifier connects over an ATT MTU of at least 51
@@ -76,7 +76,7 @@ The repository SHALL provide a host-side fixed-protocol test and a manual BlueZ 
 
 #### Scenario: Run without container hardware access
 - **WHEN** the environment lacks a Bluetooth controller or system BlueZ D-Bus access
-- **THEN** automated protocol, build, and binary-isolation checks remain runnable and documentation identifies live BLE verification as a host-hardware step
+- **THEN** protocol, build, and binary-isolation checks remain runnable and documentation identifies live BLE verification as a host-hardware step
 
 ### Requirement: No CI implementation
 The repository SHALL NOT add a GitHub Actions workflow, another CI configuration, or a CI build matrix as part of this change.

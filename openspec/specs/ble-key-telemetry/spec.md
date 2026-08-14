@@ -6,15 +6,19 @@ Define the optional encrypted BLE telemetry protocol, its central-only firmware 
 ## Requirements
 
 ### Requirement: Official external-module packaging
-Telemetry SHALL reside in `modules/zmk-key-telemetry` as a self-contained Zephyr external module with its own `zephyr/module.yml`, Kconfig, CMake, headers, sources, and protocol tests. The option `CONFIG_ZMK_KEY_TELEMETRY` SHALL default to disabled and module sources SHALL be compiled only when that option is enabled.
+The standalone `zmk-key-telemetry` repository SHALL contain a self-contained Zephyr module at its root with `zephyr/module.yml`, Kconfig, CMake, headers, sources, protocol tests, module documentation, and the authoritative telemetry OpenSpec specification. `CONFIG_ZMK_KEY_TELEMETRY` SHALL default to disabled, and module sources SHALL compile only when enabled.
 
-#### Scenario: Discover the vendored module
-- **WHEN** ZMK configures a build with `modules/zmk-key-telemetry` in `ZMK_EXTRA_MODULES`
-- **THEN** Zephyr discovers the module through `zephyr/module.yml` and loads its Kconfig and CMake integration without modifying the official ZMK or Zephyr trees
+#### Scenario: Discover the standalone module
+- **WHEN** ZMK configures a build with the west-managed `zmk-key-telemetry` checkout in `ZMK_EXTRA_MODULES`
+- **THEN** Zephyr discovers the module and exposes `CONFIG_ZMK_KEY_TELEMETRY`
 
 #### Scenario: Leave telemetry disabled
-- **WHEN** the module is discovered but `CONFIG_ZMK_KEY_TELEMETRY` is not enabled
-- **THEN** no telemetry protocol or firmware implementation source is compiled into the application
+- **WHEN** the module is present and `CONFIG_ZMK_KEY_TELEMETRY` is not enabled
+- **THEN** no telemetry protocol or firmware implementation source is compiled
+
+#### Scenario: Inspect repository ownership
+- **WHEN** both repositories are inspected
+- **THEN** reusable module code, protocol tests, module documentation, and its authoritative specification exist only in `zmk-key-telemetry`
 
 ### Requirement: Central-only telemetry placement
 For a split keyboard, `CONFIG_ZMK_KEY_TELEMETRY` SHALL depend on BLE and the split-central role. `config/corne_left.conf` SHALL enable it, and the right/peripheral configuration SHALL NOT enable it.
