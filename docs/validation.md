@@ -26,8 +26,9 @@ environment. Live flashing remains a separate hardware step.
 | --- | --- |
 | `wochap/zmk` | `a301f6d562bd67f18e496402f8cf6c87326b05b2` |
 | ZMK Zephyr fork | `dacab4875df72109b96cc8977547a0dc04875bcd` |
+| `wochap/zmk-key-telemetry` | `3112fba167f1c97a04babdf5659eb1c53464a0ef` |
 
-Both checkouts were clean after pristine builds. The ZMK fork contains and
+The checkouts were clean after pristine builds. The ZMK fork contains and
 compiles `zmk_hid_modifiers_changed`; `hid.c` raises its complete effective byte
 only after updating `keyboard_report.body.modifiers`. Telemetry samples that
 same report through `zmk_hid_get_keyboard_report()` after deferred coalescing.

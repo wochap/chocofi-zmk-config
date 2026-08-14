@@ -21,14 +21,18 @@ builds use only the full commit hashes.
 | --- | --- | --- |
 | ZMK fork | `wochap/zmk` `v0.3-branch-fork` | `a301f6d562bd67f18e496402f8cf6c87326b05b2` |
 | ZMK Zephyr fork | v3.5.0+zmk-fixes | `dacab4875df72109b96cc8977547a0dc04875bcd` |
+| Telemetry module | `wochap/zmk-key-telemetry` | `3112fba167f1c97a04babdf5659eb1c53464a0ef` |
 | Nixpkgs | nixos-26.05 snapshot (10 July 2026) | `0ad6f47ea4fe188f4bc8f0380f93ae8523337c6c` |
 | nix-community/zephyr-nix | SDK/Python packaging | `a12131ec450ea66e9005c668c31c8a055a766ef3` |
 
 `config/west.yml` pins ZMK and overrides its symbolic Zephyr import with the
-exact Zephyr commit above. Imported west projects remain pinned by the
-immutable manifests at those commits. `flake.lock` fixes every Nix input and
-content hash. The development shell provides West, Zephyr SDK 0.16.8, a host C
-compiler, Python 3, BlueZ's `bluetoothctl`, and keymap-drawer.
+exact Zephyr commit above. It also fetches the standalone telemetry module
+from `https://github.com/wochap/zmk-key-telemetry` at the exact commit above
+and checks it out at `modules/zmk-key-telemetry`. Imported west projects
+remain pinned by the immutable manifests at those commits. `flake.lock` fixes
+every Nix input and content hash. The development shell provides West, Zephyr
+SDK 0.16.8, a host C compiler, Python 3, BlueZ's `bluetoothctl`, and
+keymap-drawer.
 
 ## Initialize locally with Nix
 
@@ -50,8 +54,9 @@ just test
 python3 -m py_compile scripts/test-telemetry.py
 ```
 
-The protocol test compiles as C11 with warnings as errors in a temporary
-directory that the recipe removes on completion.
+The protocol test compiles the west-managed telemetry checkout as C11 with
+warnings as errors in a temporary directory that the recipe removes on
+completion.
 
 ## Build firmware
 
@@ -69,10 +74,10 @@ just build-all
 ```
 
 Every recipe requests a pristine build for `nice_nano_v2` and passes the
-absolute vendored `modules/zmk-key-telemetry` path through `ZMK_EXTRA_MODULES`.
-The module is discovered for both halves but enabled only by
-`config/corne_left.conf`; it is not a west project and does not modify pinned
-ZMK or Zephyr. The copied output files are:
+absolute west-managed `modules/zmk-key-telemetry` checkout path through
+`ZMK_EXTRA_MODULES`. The module is discovered for both halves but enabled
+only by `config/corne_left.conf`; it does not modify pinned ZMK or Zephyr.
+The copied output files are:
 
 - `firmware/corne_left-nice_nano_v2.uf2` — central, host-facing half
 - `firmware/corne_right-nice_nano_v2.uf2` — peripheral half
@@ -123,9 +128,11 @@ python3 scripts/test-telemetry.py XX:XX:XX:XX:XX:XX
 
 The Nix shell provides Python and `bluetoothctl`, but a container still needs
 access to the host Bluetooth controller and system BlueZ D-Bus for live use.
-See [docs/telemetry.md](docs/telemetry.md) for stable UUIDs, the protocol table,
-synchronization/loss behavior, direct build commands, cache recovery, and the
-manual verification procedure.
+See the [zmk-key-telemetry README](https://github.com/wochap/zmk-key-telemetry)
+for stable UUIDs, the protocol table, synchronization/loss behavior, and the
+module's authoritative specification. If BlueZ retains a stale characteristic
+shape after an upgrade, remove and re-pair `Chocochap` to clear its GATT
+cache.
 
 ## Keymap structure
 

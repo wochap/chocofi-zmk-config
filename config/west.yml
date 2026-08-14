@@ -44,5 +44,11 @@ manifest:
           - edtt
           - trusted-firmware-m
 
+    - name: zmk-key-telemetry
+      remote: wochap
+      # Standalone telemetry module; builds use this west-managed checkout.
+      revision: 3112fba167f1c97a04babdf5659eb1c53464a0ef
+      path: modules/zmk-key-telemetry
+
   self:
     path: config
