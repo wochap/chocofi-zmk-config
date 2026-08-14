@@ -1,0 +1,55 @@
+/ {
+    behaviors {
+        home_row_mod_left: home_row_mod_left {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            bindings = <&kp>, <&kp>;
+
+            flavor = "balanced";
+            tapping-term-ms = <275>;
+            quick-tap-ms = <150>;
+            require-prior-idle-ms = <150>;
+
+            /* Only opposite-hand keys and thumbs force a hold. */
+            hold-trigger-key-positions = <RIGHT_HAND_KEYS THUMB_KEYS>;
+            hold-trigger-on-release;
+        };
+
+        home_row_mod_right: home_row_mod_right {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            bindings = <&kp>, <&kp>;
+
+            flavor = "balanced";
+            tapping-term-ms = <275>;
+            quick-tap-ms = <150>;
+            require-prior-idle-ms = <150>;
+
+            /* Only opposite-hand keys and thumbs force a hold. */
+            hold-trigger-key-positions = <LEFT_HAND_KEYS THUMB_KEYS>;
+            hold-trigger-on-release;
+        };
+
+        layer_tap: custom_layer_tap {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            bindings = <&mo>, <&kp>;
+
+            flavor = "hold-preferred";
+            tapping-term-ms = <125>;
+            quick-tap-ms = <150>;
+        };
+    };
+
+    macros {
+        nav_to_num: nav_to_num {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <1>;
+            bindings = <&macro_release &mo NAV>,
+                       <&macro_press &mo NUM>,
+                       <&macro_pause_for_release>,
+                       <&macro_release &mo NUM>;
+        };
+    };
+};

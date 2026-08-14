@@ -1,0 +1,129 @@
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/ext_power.h>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/outputs.h>
+
+#include "layers.h"
+#include "key_positions.h"
+#include "custom_behaviors.dtsi"
+
+#define ___ &trans
+#define XXX &none
+
+#define HRM_LEFT(k1, k2, k3, k4)  &home_row_mod_left LGUI k1  &home_row_mod_left LALT k2  &home_row_mod_left LCTRL k3  &home_row_mod_left LSHIFT k4
+#define HRM_RIGHT(k1, k2, k3, k4) &home_row_mod_right RSHIFT k1 &home_row_mod_right RCTRL k2 &home_row_mod_right RALT k3 &home_row_mod_right RGUI k4
+#define LAYER_TAP(layer, key)      &layer_tap layer key
+
+/ {
+    chosen {
+        zmk,physical-layout = &foostan_corne_5col_layout;
+    };
+
+    combos {
+        compatible = "zmk,combos";
+
+        combo_cut {
+            bindings = <&kp LC(X)>;
+            key-positions = <LB3 LB1>;
+            layers = <COLEMAK_DH QWERTY>;
+            timeout-ms = <18>;
+            require-prior-idle-ms = <150>;
+        };
+
+        combo_copy {
+            bindings = <&kp LC(INS)>;
+            key-positions = <LB3 LB2>;
+            layers = <COLEMAK_DH QWERTY>;
+            timeout-ms = <18>;
+            require-prior-idle-ms = <150>;
+        };
+
+        combo_paste {
+            bindings = <&kp LS(INS)>;
+            key-positions = <LB2 LB1>;
+            layers = <COLEMAK_DH QWERTY>;
+            timeout-ms = <18>;
+            require-prior-idle-ms = <150>;
+        };
+
+        combo_select_all {
+            bindings = <&kp LC(A)>;
+            key-positions = <LT3 LT2>;
+            layers = <COLEMAK_DH QWERTY>;
+            timeout-ms = <18>;
+            require-prior-idle-ms = <150>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        colemak_dh {
+            display-name = "Colemak-DH";
+            bindings = <
+                &kp Q  &kp W  &kp F  &kp P  &kp B          &kp J  &kp L  &kp U      &kp Y    &kp SEMI
+                HRM_LEFT(A, R, S, T) &kp G                  &kp M  HRM_RIGHT(N, E, I, O)
+                &kp Z  &kp X  &kp C  &kp D  &kp V          &kp K  &kp H  &kp COMMA  &kp DOT  &kp SLASH
+                              &kp LSHIFT  LAYER_TAP(NUM, TAB)  &kp SPACE
+                              &kp BSPC    LAYER_TAP(NAV, ENTER) &kp RSHIFT
+            >;
+        };
+
+        qwerty {
+            display-name = "QWERTY";
+            bindings = <
+                &kp Q  &kp W  &kp E  &kp R  &kp T          &kp Y  &kp U  &kp I      &kp O    &kp P
+                HRM_LEFT(A, S, D, F) &kp G                  &kp H  HRM_RIGHT(J, K, L, SEMI)
+                &kp Z  &kp X  &kp C  &kp V  &kp B          &kp N  &kp M  &kp COMMA  &kp DOT  &kp SLASH
+                              &kp LSHIFT  LAYER_TAP(NUM, TAB)  &kp SPACE
+                              &kp BSPC    LAYER_TAP(NAV, ENTER) &kp RSHIFT
+            >;
+        };
+
+        num {
+            display-name = "NUM";
+            bindings = <
+                &kp N8  &kp N7  &kp N3    &kp N0     &kp N5       &kp N6    &kp N2  &kp N1     &kp N9     &kp N4
+                HRM_LEFT(EXCL, DLLR, LPAR, RPAR) &kp AT            &kp BSLH   HRM_RIGHT(MINUS, EQUAL, ASTRK, CARET)
+                XXX     XXX     &kp HASH  &kp SQT    &kp GRAVE     &kp AMPS  &kp LBKT &kp RBKT   &kp PRCNT  XXX
+                                ___       ___        XXX
+                                &kp DEL   LAYER_TAP(NAV, ESC)      ___
+            >;
+        };
+
+        nav {
+            display-name = "NAV";
+            bindings = <
+                &kp F1  &kp F2    &kp F3     &kp F4     &kp F5       &kp F6    &kp F7  &kp F8  &kp F9  &kp F10
+                HRM_LEFT(F11, HOME, PG_UP, PG_DN) &kp END             &kp LEFT  HRM_RIGHT(DOWN, UP, RIGHT, F12)
+                XXX     XXX       XXX        XXX        &kp CAPS      &kp PSCRN  XXX     XXX     XXX     &sl ADJUST
+                                  ___        &nav_to_num &mo FN
+                                  XXX        ___         ___
+            >;
+        };
+
+        fn {
+            display-name = "FN";
+            bindings = <
+                XXX  XXX  XXX       XXX       XXX          XXX      XXX        &kp C_PP      XXX        XXX
+                XXX  XXX  &kp C_BRI_UP &kp C_BRI_DN XXX    &kp C_PREV &kp C_VOL_DN &kp C_VOL_UP &kp C_NEXT &kp C_MUTE
+                XXX  XXX  XXX       XXX       XXX          XXX      XXX        XXX           XXX        XXX
+                          ___       ___       XXX
+                          XXX       XXX       ___
+            >;
+        };
+
+        adjust {
+            display-name = "ADJUST";
+            bindings = <
+                XXX  &out OUT_USB  &out OUT_BLE  &out OUT_TOG  XXX       &ext_power EP_TOG  &ext_power EP_ON  &ext_power EP_OFF  XXX  XXX
+                &bt BT_SEL 0       &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4
+                                                                      &bt BT_CLR_ALL  &bt BT_CLR  XXX  XXX  XXX
+                XXX  XXX  XXX  &bootloader  &sys_reset                 &sys_reset  &bootloader  XXX  XXX  &tog QWERTY
+                           XXX  XXX  XXX
+                           XXX  XXX  XXX
+            >;
+        };
+    };
+};
