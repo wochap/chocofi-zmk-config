@@ -1,99 +1,54 @@
+set shell := ["bash", "-eu", "-o", "pipefail", "-c"]
+
 default:
     @just --list --unsorted
 
-config := absolute_path('config')
-build := absolute_path('.build')
-out := absolute_path('firmware')
-draw := absolute_path('draw')
-
-# parse and draw the keymap as SVG
-draw:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    mkdir -p "{{ draw }}"
-    keymap parse -z "{{ config }}/corne.keymap" >"{{ draw }}/corne.yaml"
-    keymap draw "{{ draw }}/corne.yaml" >"{{ draw }}/corne.svg"
-
-# parse combos.dtsi and adjust settings to not run out of slots
-_parse_combos:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    cconf="{{ config / 'combos.dtsi' }}"
-    if [[ -f $cconf ]]; then
-        # set MAX_COMBOS_PER_KEY to the most frequent combos count
-        count=$(
-            tail -n +10 $cconf |
-                grep -Eo '[LR][TMBH][0-9]' |
-                sort | uniq -c | sort -nr |
-                awk 'NR==1{print $1}'
-        )
-        sed -Ei "/CONFIG_ZMK_COMBO_MAX_COMBOS_PER_KEY/s/=.+/=$count/" "{{ config }}"/*.conf
-        echo "Setting MAX_COMBOS_PER_KEY to $count"
-
-        # set MAX_KEYS_PER_COMBO to the most frequent key count
-        count=$(
-            tail -n +10 $cconf |
-                grep -o -n '[LR][TMBH][0-9]' |
-                cut -d : -f 1 | uniq -c | sort -nr |
-                awk 'NR==1{print $1}'
-        )
-        sed -Ei "/CONFIG_ZMK_COMBO_MAX_KEYS_PER_COMBO/s/=.+/=$count/" "{{ config }}"/*.conf
-        echo "Setting MAX_KEYS_PER_COMBO to $count"
-    fi
-
-# parse build.yaml and filter targets by expression
-_parse_targets $expr:
-    #!/usr/bin/env bash
-    attrs="[.board, .shield]"
-    filter="(($attrs | map(. // [.]) | combinations), ((.include // {})[] | $attrs)) | join(\",\")"
-    echo "$(yq -r "$filter" build.yaml | grep -v "^," | grep -i "${expr/#all/.*}")"
-
-# build firmware for single board & shield combination
-_build_single $board $shield *west_args:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    artifact="${shield:+${shield// /+}-}${board}"
-    build_dir="{{ build / '$artifact' }}"
-
-    echo "Building firmware for $artifact..."
-    west build -s zmk/app -d "$build_dir" -b $board {{ west_args }} -- \
-        -DZMK_CONFIG="{{ config }}" ${shield:+-DSHIELD="$shield"}
-
-    if [[ -f "$build_dir/zephyr/zmk.uf2" ]]; then
-        mkdir -p "{{ out }}" && cp "$build_dir/zephyr/zmk.uf2" "{{ out }}/$artifact.uf2"
-    else
-        mkdir -p "{{ out }}" && cp "$build_dir/zephyr/zmk.bin" "{{ out }}/$artifact.bin"
-    fi
-
-# build firmware for matching targets
-build expr *west_args: _parse_combos
-    #!/usr/bin/env bash
-    set -euo pipefail
-    targets=$(just _parse_targets {{ expr }})
-
-    [[ -z $targets ]] && echo "No matching targets found. Aborting..." >&2 && exit 1
-    echo "$targets" | while IFS=, read -r board shield; do
-        just _build_single "$board" "$shield" {{ west_args }}
-    done
-
-# clear build cache and artifacts
-clean:
-    rm -rf {{ build }} {{ out }}
-
-# clear all automatically generated files
-clean-all: clean
-    rm -rf .west zmk
-
-# initialize west
+# Initialize this directory as a west workspace and resolve every pinned project.
 init:
-    west init -l config
+    if [[ ! -f .west/config ]]; then west init -l config; fi
     west update --narrow --fetch-opt=--filter=blob:none
     west zephyr-export
 
-# list build targets
-list:
-    @just _parse_targets all | sed 's/,$//' | sort | column
-
-# update west
+# Re-resolve the immutable manifest without changing its declared revisions.
 update:
     west update --narrow --fetch-opt=--filter=blob:none
+    west zephyr-export
+
+# Build the central (left) half and copy its UF2 into firmware/.
+build-left:
+    just _build left
+
+# Build the peripheral (right) half and copy its UF2 into firmware/.
+build-right:
+    just _build right
+
+# Build both halves.
+build-all: build-left build-right
+
+# Compile and run the host-side telemetry protocol tests.
+test:
+    test_dir="$(mktemp -d)"; \
+    trap 'rm -rf -- "$test_dir"' EXIT; \
+    "${CC:-cc}" -std=c11 -Wall -Wextra -Werror -pedantic \
+        -Imodules/zmk-key-telemetry/include \
+        modules/zmk-key-telemetry/src/protocol.c \
+        modules/zmk-key-telemetry/tests/test_protocol.c \
+        -o "$test_dir/test_protocol"; \
+    "$test_dir/test_protocol"
+
+# Generate keymap-drawer's parsed YAML and six-layer SVG.
+draw:
+    mkdir -p draw
+    keymap parse -z config/corne.keymap -o draw/corne.yaml
+    keymap draw draw/corne.yaml -d zmk/app/dts/layouts/foostan/corne/5column.dtsi -l foostan_corne_5col_layout -o draw/corne.svg
+
+# Remove generated build and firmware outputs.
+clean:
+    rm -rf -- .build firmware
+
+[private]
+_build half:
+    mkdir -p firmware; \
+    module_path="$(realpath modules/zmk-key-telemetry)"; \
+    west build -p always -s zmk/app -d ".build/corne_{{ half }}-nice_nano_v2" -b nice_nano_v2 -- -DSHIELD="corne_{{ half }}" -DZMK_CONFIG="${PWD}/config" -DZMK_EXTRA_MODULES="$module_path"
+    install -Dm644 ".build/corne_{{ half }}-nice_nano_v2/zephyr/zmk.uf2" "firmware/corne_{{ half }}-nice_nano_v2.uf2"

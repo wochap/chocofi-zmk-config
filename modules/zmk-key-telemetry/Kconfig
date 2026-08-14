@@ -1,0 +1,24 @@
+# SPDX-License-Identifier: MIT
+
+menuconfig ZMK_KEY_TELEMETRY
+    bool "ZMK key-position telemetry over Bluetooth LE"
+    default n
+    depends on ZMK_BLE
+    depends on !ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL
+    help
+      Expose encrypted, read/notify BLE GATT telemetry containing physical
+      position, layer, effective HID modifier, endpoint, battery, and split
+      state. Listeners never consume or modify ZMK events. On a split keyboard
+      it must be enabled only on the central half.
+
+if ZMK_KEY_TELEMETRY
+
+config ZMK_KEY_TELEMETRY_COALESCE_MS
+    int "State-frame coalescing delay in milliseconds"
+    default 1
+    range 1 10
+    help
+      Delay authoritative state construction briefly so all synchronous ZMK
+      events from one logical key operation have settled before notification.
+
+endif # ZMK_KEY_TELEMETRY
