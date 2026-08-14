@@ -46,7 +46,7 @@ The implementation SHALL validate both halves, resolved fork and Zephyr revision
 
 #### Scenario: Validate a successful rebuild
 - **WHEN** all implementation checks pass
-- **THEN** both UF2 files exist, dependency HEADs match requested commits, optional telemetry sources are configured as designed, protocol-v2 tests pass, telemetry symbols and UUIDs exist on the left, and they are absent from the right
+- **THEN** both UF2 files exist, dependency HEADs match requested commits, optional telemetry sources are configured as designed, telemetry protocol tests pass, telemetry symbols and UUIDs exist on the left, and they are absent from the right
 
 #### Scenario: Verify telemetry on hardware
 - **WHEN** both halves are flashed and the verifier observes physical, layer, modifier, endpoint, battery, and split activity
@@ -61,7 +61,7 @@ The README SHALL identify the ZMK modifier-hook fork, exact ZMK and Zephyr commi
 
 #### Scenario: Follow README from a clean clone
 - **WHEN** a user follows the documented Nix initialization and per-half build steps
-- **THEN** they can test protocol v2 and produce telemetry-enabled left and telemetry-free right firmware artifacts from immutable sources
+- **THEN** they can test the telemetry protocol and produce telemetry-enabled left and telemetry-free right firmware artifacts from immutable sources
 
 ### Requirement: Telemetry verification workflow
 The keyboard repository SHALL provide a manual BlueZ verifier. The module repository SHALL provide the host-side fixed-protocol test. The local workflow SHALL run the module test from its west checkout and keep live BLE verification as a host-hardware step.
@@ -72,7 +72,7 @@ The keyboard repository SHALL provide a manual BlueZ verifier. The module reposi
 
 #### Scenario: Subscribe through BlueZ
 - **WHEN** the verifier connects over an ATT MTU of at least 51
-- **THEN** it prints decoded protocol-v2 snapshots and settled state frames including effective modifiers and optional valid state
+- **THEN** it prints decoded snapshots and settled telemetry state frames including effective modifiers and optional valid state
 
 #### Scenario: Run without container hardware access
 - **WHEN** the environment lacks a Bluetooth controller or system BlueZ D-Bus access

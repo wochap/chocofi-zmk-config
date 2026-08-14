@@ -5,7 +5,7 @@ environment. Live flashing remains a separate hardware step.
 
 ## Protocol and consumer checks
 
-- `just test` compiled the explicit protocol-v2 encoder as C11 with
+- `just test` compiled the explicit telemetry protocol encoder as C11 with
   `-Wall -Wextra -Werror -pedantic`; every exact-byte, offset, mask, sentinel,
   layer, timestamp, sequence, and 64-position-boundary assertion passed.
 - `python3 -m py_compile scripts/test-telemetry.py` passed. The verifier now
@@ -15,8 +15,7 @@ environment. Live flashing remains a separate hardware step.
   Vite production build passed.
 - In the `kb-hud` Nix shell, all 14 Rust decoder/state/config tests passed.
   The modified Rust sources were formatted with the shell's `rustfmt`.
-- Both repositories' `telemetry-state-frame-v2` OpenSpec changes pass strict
-  validation.
+- Both repositories' telemetry OpenSpec specifications pass strict validation.
 
 ## Dependency and API audit
 
@@ -56,7 +55,7 @@ Both targets were rebuilt pristine from the pinned fork.
 
 | Target | Role | Flash used | RAM used | UF2 size | SHA-256 |
 | --- | --- | ---: | ---: | ---: | --- |
-| `corne_left` | central + telemetry v2 | 224080 B | 52720 B | 448512 B | `ffc0f69ad531c0ff200fa00c5919770995e802cf80ca2c9e2f95efed124c9a45` |
+| `corne_left` | central + telemetry | 224080 B | 52720 B | 448512 B | `ffc0f69ad531c0ff200fa00c5919770995e802cf80ca2c9e2f95efed124c9a45` |
 | `corne_right` | split peripheral | 172880 B | 32508 B | 346112 B | `d140d01b491e5795071dea57ee51d079de0dc20c0fb987ca969dedd80292eb32` |
 
 The left generated configuration contains:

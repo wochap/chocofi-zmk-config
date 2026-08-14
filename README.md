@@ -102,7 +102,7 @@ If BlueZ does not discover telemetry after an upgrade, remove and re-pair
 
 ## Optional BLE telemetry
 
-The left firmware exposes an encrypted read/notify protocol-v2 authoritative
+The left firmware exposes an encrypted read/notify authoritative telemetry
 state frame. Each 48-byte frame includes global pressed positions, active and
 default layers, the complete effective HID modifier byte, sequence/timestamp,
 validity and change masks, dropped-frame count, and—when available—HID

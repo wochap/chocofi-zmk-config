@@ -42,8 +42,8 @@ The central firmware SHALL expose service UUID `9e7a7d70-df1b-4f76-9d45-8c3f4a6b
 - **WHEN** a client without link encryption reads the characteristic or writes its CCC
 - **THEN** the GATT operation is denied by the encrypted permissions
 
-### Requirement: Protocol v1 record encoding
-Every characteristic read and notification SHALL be exactly 48 bytes using protocol version `2`. It SHALL encode frame flags, declared frame size, 32-bit sequence, 64-bit central monotonic timestamp, 64-bit pressed-position bitmap, 32-bit complete active-layer mask, 32-bit changed-field mask, 32-bit valid-field mask, effective HID modifiers, HID indicators, default layer, selected transport, BLE profile, central and peripheral battery percentages, split status, and 32-bit cumulative dropped-frame count at documented fixed offsets using unsigned little-endian integers.
+### Requirement: Telemetry frame encoding
+Every characteristic read and notification SHALL be exactly 48 bytes with the version field set to `2`. It SHALL encode frame flags, declared frame size, 32-bit sequence, 64-bit central monotonic timestamp, 64-bit pressed-position bitmap, 32-bit complete active-layer mask, 32-bit changed-field mask, 32-bit valid-field mask, effective HID modifiers, HID indicators, default layer, selected transport, BLE profile, central and peripheral battery percentages, split status, and 32-bit cumulative dropped-frame count at documented fixed offsets using unsigned little-endian integers.
 
 #### Scenario: Encode a settled state revision
 - **WHEN** one or more observed keyboard-state fields settle after synchronous ZMK processing
@@ -62,7 +62,7 @@ Every characteristic read and notification SHALL be exactly 48 bytes using proto
 - **THEN** the encoded active-layer mask still sets the default layer's bit and the default-layer field identifies it
 
 ### Requirement: Native global physical positions
-Telemetry SHALL report the official five-column layout's native global positions `0-35` in a 64-bit bitmap. Bits `36-63` SHALL remain clear, and firmware SHALL NOT translate events into the former 42-slot placeholder model.
+Telemetry SHALL report the official five-column layout's native global positions `0-35` in a 64-bit bitmap. Bits `36-63` SHALL remain clear, and firmware SHALL preserve native positions without translation.
 
 #### Scenario: Press a left-half key
 - **WHEN** a local matrix event is raised on the central half
@@ -111,7 +111,7 @@ Firmware SHALL fail its build if the keymap exceeds 64 positions, the keymap exc
 
 #### Scenario: Test the fixed encoder
 - **WHEN** the host protocol test is run
-- **THEN** known state and snapshot inputs produce expected 48-byte protocol-v2 values at every documented offset
+- **THEN** known state and snapshot inputs produce expected 48-byte telemetry-frame values at every documented offset
 
 #### Scenario: Negotiate sufficient MTU
 - **WHEN** `bt_gatt_get_mtu(conn)` returns at least 51
